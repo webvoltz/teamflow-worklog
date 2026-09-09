@@ -96,7 +96,16 @@ export const handlers = [
         const { query } = (await request.clone().json()) as unknown as { query: string };
         const userId = query.match(/userId:\s*"([^"]+)"/)?.[1] ?? "";
         const entry = getWorkPlanEntry(userId);
-        return HttpResponse.json({ data: { schedule: entry.schedule, update: entry.update, tomorrow: entry.tomorrow } });
+        return HttpResponse.json({
+            data: {
+                schedule: entry.schedule,
+                // The "update" query also asks for status/reviewNote (they don't apply to
+                // schedule/tomorrow), so make sure they're always present, even as null -
+                // Apollo warns about fields the query asked for but the response omitted.
+                update: { ...entry.update, status: entry.update.status ?? null, reviewNote: entry.update.reviewNote ?? null },
+                tomorrow: entry.tomorrow,
+            },
+        });
     }),
 
     api.query("GetTaskType", () => HttpResponse.json({ data: { taskTypes: { nodes: SAMPLE_TASK_TYPES } } })),

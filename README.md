@@ -1,53 +1,107 @@
-# Timesheet
+# TeamFlow Worklog
 
-The Timesheet App is a project management application designed to streamline daily scheduling and updates for employees and team leaders. Built with React.js and Vite, this app allows employees to log their daily schedules and updates, while team leaders have the capability to review and approve these entries. The application integrates seamlessly with a headless WordPress backend, providing a robust and flexible content management solution. For enhanced security, the app includes a login system with 2FA OTP verification, ensuring secure access for all users.
+TeamFlow Worklog is a sample business-workflow frontend: employees log a daily **work schedule** and an end-of-day **work update**, and their team lead **reviews, approves, or rejects** each update. It's built to demonstrate a realistic React + GraphQL + Redux Toolkit stack — role-based views, an OTP-style login flow, optimistic-feeling data loading, and explicit error states — without depending on any real backend.
 
-## Key Features
+> This is a portfolio/demo repository. There is no private backend: every GraphQL request is served locally by a [Mock Service Worker](https://mswjs.io/) layer with realistic sample data, so the app runs fully standalone.
 
-1. Daily Schedule Logging: Employees can enter their daily schedules and updates efficiently.
-2. Headless WordPress Integration: Leveraging a headless WordPress backend, the app provides a flexible content management experience.
-3. Secure Login with 2FA OTP: Users log in using a secure two-factor authentication (2FA) system with OTP verification, enhancing the security of the application.
+## Business workflow
 
-## Getting Started Locally
+1. **Employee logs in** with a username/password, then confirms a one-time passcode (OTP) sent to their email.
+2. **Employee plans their day** — adds projects and tasks to today's *work schedule*.
+3. **Employee reports progress** — at day's end, submits a *work update* (what got done) plus a plan for *tomorrow*. The update enters `pending` review.
+4. **Team lead reviews the queue** — the Approvals view lists every pending work update from their team, with **Approve** or **Reject** (with an optional note).
+5. **Employee sees the outcome** — their submitted update shows a status badge (`Pending` / `Approved` / `Rejected`) and the reviewer's note, if any.
 
-To get started with this KD_TIMESHEET, follow these steps:
+## Data flow
 
-First, Fork and Clone the repository Locally:
-
-  ```bash
-   git clone https://gitlab.webcase.me/Node-projects/timesheet/timesheet-app-react.git
-  ```
-
-Next, install the required Dependencies:
-
- ```bash
-  cd timesheet-app-react
-  npm install
+```mermaid
+flowchart LR
+    UI["React components"] -->|dispatch thunk| RTK["Redux Toolkit slice"]
+    RTK -->|Apollo Client query/mutation| Apollo["Apollo Client"]
+    Apollo -->|HTTP POST /graphql| MSW["MSW mock GraphQL layer\n(src/mocks)"]
+    MSW -->|sample data + in-memory store| Apollo
+    Apollo -->|normalized result| RTK
+    RTK -->|selector| UI
 ```
 
-Lastly, Get the required environment variable from the providers [ Reference: [.env.example](/.env.example)] :
+- **UI components** (`src/pages`, `src/component`) never call GraphQL directly — they dispatch a Redux Toolkit `createAsyncThunk` (`src/redux/slice/*`).
+- Each thunk calls **Apollo Client** (`src/services/apollo.ts`) with a query/mutation from `src/graphql/*.graphql.ts`.
+- In development, testing, and this deployed demo, Apollo's HTTP requests are intercepted by **MSW** (`src/mocks/handlers.ts`), which serves data from an in-memory store (`src/mocks/data.ts`) seeded with sample employees, projects, and work plans. Approvals actually mutate that store, so state persists for the rest of the session.
+- Point `VITE_GRAPHQL_API_URL` at a real GraphQL endpoint (see [`.env.example`](.env.example)) to swap the mock layer for a live backend — no other code changes needed.
+- Loading and error states are handled explicitly at each layer: thunks catch and store `{ message }` errors, and components branch on `loading`/`error` from the slice (see `src/pages/todayTimesheet/index.tsx`).
+
+## Role-based UI
+
+| | Employee | Team lead |
+|---|---|---|
+| Log daily work schedule / update | ✅ | ✅ (for their own work) |
+| See their own update's review status | ✅ | ✅ |
+| "Approvals" nav item | — | ✅ |
+| Review team's pending updates | — | ✅ |
+| Approve / reject with a note | — | ✅ |
+
+Role is read from the logged-in user's `userrole` (returned by the `GetUser` query) and checked at both the nav-link and route level (`src/pages/teamApprovals/index.tsx` redirects a non-team-lead back to `/`).
+
+### Sample accounts
+
+The mock layer ships two accounts. Any password works; the OTP code is always **`123456`**.
+
+| Role | Username or email |
+|---|---|
+| Employee | `employee@teamflow.dev` / `jordan.rivera` |
+| Team lead | `lead@teamflow.dev` / `morgan.lee` |
+
+Log in as the team lead to see Jordan Rivera's sample work update already sitting in the Approvals queue.
+
+## Tech stack
+
+React 18 · TypeScript · Vite · Apollo Client · GraphQL · Redux Toolkit · Ant Design · Tailwind CSS · MSW · Vitest · React Testing Library
+
+## Getting started
 
 ```bash
-    npm run start
+npm install
+npm run dev       # starts the app at http://localhost:5173, backed by the mock GraphQL layer
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+No environment variables are required to run locally — see [`.env.example`](.env.example) if you want to point at a real backend instead.
 
-## Technologies Used
+### Other scripts
 
-1. React.js: For building the dynamic and interactive user interface.
-2. Vite: A fast build tool for frontend development, offering quick setup and optimized performance.
-3. NPM: Used for dependency management, making it easy to install and manage libraries and tools.
-4. Headless WordPress: Serves as the backend for content management, providing a decoupled and API-driven architecture.
-5. 2FA OTP Verification: Integrated for secure user authentication and access control.
-6. TypeScript - Enhances JavaScript with static typing, used for type safety and better developer experience.
-7. Tailwind CSS - Utility-first CSS framework for rapidly building custom designs.
-8. Ant Design - UI component library providing elegant and consistent design elements.
-9. Apollo Client - Integrated with GraphQL for managing data and state across the app.
-10. GraphQL - For efficient data fetching and serving from the backend.
-11. Redux Toolkit - For managing application state in a structured and efficient manner.
+```bash
+npm run build      # type-check and produce a production build
+npm run preview     # preview the production build locally
+npm run lint        # ESLint
+npm test            # run the test suite once (Vitest)
+npm run test:watch  # run tests in watch mode
+```
 
-## Version
+## Testing
 
-Node version : v20.14.0
-React version: ^18.3.1
+Tests use Vitest, React Testing Library, and the same MSW handlers as the app (via `msw/node`), so they exercise the real Apollo Client → Redux → UI flow rather than mocked components. Coverage includes:
+
+- Login → OTP happy path and an invalid-OTP error state
+- Adding a new work schedule end to end
+- A team lead approving a pending work update
+- A GraphQL error surfacing in the UI
+
+## Project structure
+
+```
+src/
+├─ component/     # Presentational + feature components (header, work-plan forms, team-approvals, ...)
+├─ pages/          # Route-level screens (authentication, todayTimesheet, teamApprovals, ...)
+├─ graphql/        # gql query/mutation documents, one file per domain
+├─ redux/slice/    # Redux Toolkit slices + async thunks (one per data domain)
+├─ mocks/          # MSW handlers, sample data, browser/node worker setup
+├─ services/       # Apollo Client setup
+├─ types/          # Shared TypeScript types
+├─ test/           # Test setup + render helpers
+└─ route/          # Route table
+```
+
+## Screenshots
+
+| Login | Employee's daily timesheet | Team lead's approval queue |
+|---|---|---|
+| ![Login screen](docs/screenshots/login.png) | ![Employee timesheet with a pending work update](docs/screenshots/employee-timesheet.png) | ![Team lead reviewing a pending work update](docs/screenshots/team-approvals.png) |

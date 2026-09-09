@@ -56,8 +56,8 @@ const ViewSchedule = ({ operationName, viewMode, taskData }: ViewScheduleProps) 
                         </button>
                     </h2>
                     <ul className="py-4">
-                        {item.taskDetail.map((taskData) => (
-                            <li className="text-sm" key={taskData.taskStatus}>
+                        {item.taskDetail.map((taskData, taskIndex) => (
+                            <li className="text-sm" key={`${item.projectId}-${taskIndex}`}>
                                 - {taskData.description}{" "}
                                 <span className="font-medium text-black">({taskData.hours}h)</span>
                             </li>

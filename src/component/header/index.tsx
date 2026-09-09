@@ -2,7 +2,7 @@ import type { MenuProps } from "antd";
 import { Avatar, Dropdown, Menu, Typography } from "antd";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { CloseIcon, Hamburger } from "../../assets/svg-images";
 import BrandLogo from "../brand-logo";
 import { ROUTE_CONST } from "../../constants/route-constant";
@@ -12,14 +12,15 @@ import { clearLocalStorage } from "../../utils/local-storage";
 
 const Header = () => {
     const { data } = useSelector((state: RootState) => state.user);
-    const navigate = useNavigate();
     const { Text } = Typography;
     const [menuVisible, setMenuVisible] = useState(false);
 
     const linkClasses = "text-black text-base md:text-black custom-hover border-b-2 border-transparent";
     const handleSignOut = () => {
         clearLocalStorage();
-        navigate(`${ROUTE_CONST.AUTH.LOGIN}`);
+        // Full reload (rather than a client-side navigate) so the redux store and Apollo
+        // cache don't carry the signed-out user's data into the next session.
+        window.location.href = ROUTE_CONST.AUTH.LOGIN;
     };
 
     const toggleMenu = () => {

@@ -31,8 +31,8 @@ export type WorkPlanStatus = "pending" | "approved" | "rejected";
 export interface SliceResponse {
     updatedDataAndTime: string;
     projectDetail: SingleTask[];
-    status?: WorkPlanStatus;
-    reviewNote?: string;
+    status?: WorkPlanStatus | null;
+    reviewNote?: string | null;
 }
 
 export interface IndividualSchedule {
