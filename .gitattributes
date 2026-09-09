@@ -1,0 +1,15 @@
+# Normalize line endings to LF for everyone, regardless of the local
+# core.autocrlf setting - Prettier (prettier.config.mjs) enforces endOfLine: 'lf',
+# so a Windows checkout with autocrlf=true would otherwise fail `npm run format:check`
+# on every text file.
+* text=auto eol=lf
+
+*.ico binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.svg binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
