@@ -1,22 +1,22 @@
 .not-found-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    text-align: center;
-    background-color: #f8f9fa;
-    color: #343a40;
-    padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  background-color: #f8f9fa;
+  color: #343a40;
+  padding: 0 20px;
 }
 
 .title {
-    font-size: 3rem;
-    margin-bottom: 20px;
-    font-weight: bold;
-    color: #880000;
+  font-size: 3rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #880000;
 }
 
 .description {
-    font-size: 1.25rem;
+  font-size: 1.25rem;
 }
