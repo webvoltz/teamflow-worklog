@@ -73,7 +73,7 @@ const OtpVerification: React.FC<OtpVerificationProps> = ({ handleOtpSubmit, isLo
                     <div className="w-full flex justify-between otpinput">
                         {otp.map((value, index) => (
                             <Input
-                                key={value}
+                                key={index}
                                 type="text"
                                 ref={(input) => (inputRefs.current[index] = input)}
                                 value={value}

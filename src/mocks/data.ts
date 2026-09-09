@@ -135,7 +135,7 @@ export const listTeamWorkPlans = (): TeamWorkPlanEntry[] =>
                 designation: user.designation,
                 updatedDataAndTime: update.updatedDataAndTime,
                 status: update.status ?? "pending",
-                reviewNote: update.reviewNote,
+                reviewNote: update.reviewNote ?? null,
                 projectDetail: update.projectDetail,
             };
             return entry;

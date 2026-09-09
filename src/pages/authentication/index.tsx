@@ -38,8 +38,8 @@ export default function Authentication() {
         notification.success({ message: data.login.message ?? "OTP sent successfully." });
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    // antd's <Form onFinish> calls this with the form values, not a DOM event.
+    const handleSubmit = async () => {
         await requestOtp();
     };
 

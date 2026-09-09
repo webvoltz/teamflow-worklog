@@ -9,23 +9,6 @@ export const SUBMIT_SCHEDULE = gql`
     }
 `;
 
-export const getWorkScheduleQuery = (operationType: string, userId: string) => gql`
-    query GetUserSchedule {
-        getUserSchedule(input: {operationType: "${operationType}", userId: "${userId}"}) {
-            updatedDataAndTime
-            projectDetail {
-                projectId
-                projectName
-                taskDetail {
-                    description
-                    hours
-                    taskType
-                }
-            }
-        }
-    }
-`;
-
 export const TASK_TYPE = gql`
     query GetTaskType {
         taskTypes {

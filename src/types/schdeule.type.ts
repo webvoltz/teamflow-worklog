@@ -54,6 +54,6 @@ export interface TeamWorkPlanEntry {
     designation: string;
     updatedDataAndTime: string;
     status: WorkPlanStatus;
-    reviewNote?: string;
+    reviewNote?: string | null;
     projectDetail: SingleTask[];
 }
