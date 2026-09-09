@@ -1,3 +1,3 @@
 export interface QueryError {
-    message: string;
+  message: string;
 }

@@ -1,1 +1,1 @@
-export type OptionArray = Array<{ value: string | number; label: string }>;
+export type OptionArray = { value: string | number; label: string }[];

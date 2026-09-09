@@ -7,8 +7,8 @@ TeamFlow Worklog is a sample business-workflow frontend: employees log a daily *
 ## Business workflow
 
 1. **Employee logs in** with a username/password, then confirms a one-time passcode (OTP) sent to their email.
-2. **Employee plans their day** — adds projects and tasks to today's *work schedule*.
-3. **Employee reports progress** — at day's end, submits a *work update* (what got done) plus a plan for *tomorrow*. The update enters `pending` review.
+2. **Employee plans their day** — adds projects and tasks to today's _work schedule_.
+3. **Employee reports progress** — at day's end, submits a _work update_ (what got done) plus a plan for _tomorrow_. The update enters `pending` review.
 4. **Team lead reviews the queue** — the Approvals view lists every pending work update from their team, with **Approve** or **Reject** (with an optional note).
 5. **Employee sees the outcome** — their submitted update shows a status badge (`Pending` / `Approved` / `Rejected`) and the reviewer's note, if any.
 
@@ -32,13 +32,13 @@ flowchart LR
 
 ## Role-based UI
 
-| | Employee | Team lead |
-|---|---|---|
-| Log daily work schedule / update | ✅ | ✅ (for their own work) |
-| See their own update's review status | ✅ | ✅ |
-| "Approvals" nav item | — | ✅ |
-| Review team's pending updates | — | ✅ |
-| Approve / reject with a note | — | ✅ |
+|                                      | Employee | Team lead               |
+| ------------------------------------ | -------- | ----------------------- |
+| Log daily work schedule / update     | ✅       | ✅ (for their own work) |
+| See their own update's review status | ✅       | ✅                      |
+| "Approvals" nav item                 | —        | ✅                      |
+| Review team's pending updates        | —        | ✅                      |
+| Approve / reject with a note         | —        | ✅                      |
 
 Role is read from the logged-in user's `userrole` (returned by the `GetUser` query) and checked at both the nav-link and route level (`src/pages/teamApprovals/index.tsx` redirects a non-team-lead back to `/`).
 
@@ -46,10 +46,10 @@ Role is read from the logged-in user's `userrole` (returned by the `GetUser` que
 
 The mock layer ships two accounts. Any password works; the OTP code is always **`123456`**.
 
-| Role | Username or email |
-|---|---|
-| Employee | `employee@teamflow.dev` / `jordan.rivera` |
-| Team lead | `lead@teamflow.dev` / `morgan.lee` |
+| Role      | Username or email                         |
+| --------- | ----------------------------------------- |
+| Employee  | `employee@teamflow.dev` / `jordan.rivera` |
+| Team lead | `lead@teamflow.dev` / `morgan.lee`        |
 
 Log in as the team lead to see Jordan Rivera's sample work update already sitting in the Approvals queue.
 
@@ -102,6 +102,6 @@ src/
 
 ## Screenshots
 
-| Login | Employee's daily timesheet | Team lead's approval queue |
-|---|---|---|
+| Login                                       | Employee's daily timesheet                                                                | Team lead's approval queue                                                        |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | ![Login screen](docs/screenshots/login.png) | ![Employee timesheet with a pending work update](docs/screenshots/employee-timesheet.png) | ![Team lead reviewing a pending work update](docs/screenshots/team-approvals.png) |

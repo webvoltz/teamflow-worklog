@@ -4,16 +4,17 @@
 @tailwind utilities;
 
 @layer base {
-    @font-face {
-      font-family: 'Inter';
-      font-style: normal;
-      font-weight: 400;
-      font-display: swap;
-      src: url('../src/assets/font/Inter-Regular.eot');
-      src: url('../src/assets/font/Inter-Regular.eot') format('embedded-opentype'),
-          url('../src/assets/font/Inter-Regular.woff2') format('woff2'),
-          url('../src/assets/font/Inter-Regular.woff') format('woff'),
-          url('../src/assets/font/Inter-Regular.ttf') format('truetype'),
-          url('../src/assets/font/Inter-Regular.svg#Inter-Regular') format('svg');
-    }
+  @font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../src/assets/font/Inter-Regular.eot');
+    src:
+      url('../src/assets/font/Inter-Regular.eot') format('embedded-opentype'),
+      url('../src/assets/font/Inter-Regular.woff2') format('woff2'),
+      url('../src/assets/font/Inter-Regular.woff') format('woff'),
+      url('../src/assets/font/Inter-Regular.ttf') format('truetype'),
+      url('../src/assets/font/Inter-Regular.svg#Inter-Regular') format('svg');
   }
+}
