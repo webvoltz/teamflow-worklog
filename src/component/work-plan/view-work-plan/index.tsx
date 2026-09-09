@@ -1,13 +1,20 @@
+import { Tag } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { FaRegCopy } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import { OperationName, SingleTask } from "../../../types/schdeule.type";
+import { OperationName, SingleTask, WorkPlanStatus } from "../../../types/schdeule.type";
 import { capitalizeFirstLetter } from "../../../utils/common-functions";
 import { CopySingleWork } from "../../../utils/copy-work";
 import { calculateTaskTotalHours } from "../../../utils/date-time-calculation";
 import { TomorrowPlan } from "./tomorrow-plan";
+
+const STATUS_COLOR: Record<WorkPlanStatus, string> = {
+    pending: "gold",
+    approved: "green",
+    rejected: "red",
+};
 
 type ViewScheduleProps = {
     operationName: OperationName;
@@ -84,7 +91,17 @@ const ViewSchedule = ({ operationName, viewMode, taskData }: ViewScheduleProps) 
                 )}
             {operationName === "update" && !viewMode && (
                 <>
-                    <p className="update-msg text-sm">Thank you for your submission.</p>
+                    <p className="update-msg text-sm flex items-center gap-2">
+                        Thank you for your submission.
+                        {employeeWorkPlan.update?.status && (
+                            <Tag color={STATUS_COLOR[employeeWorkPlan.update.status]} className="uppercase">
+                                {employeeWorkPlan.update.status}
+                            </Tag>
+                        )}
+                    </p>
+                    {employeeWorkPlan.update?.reviewNote && (
+                        <p className="update-msg text-sm">Reviewer note: {employeeWorkPlan.update.reviewNote}</p>
+                    )}
                     <p className="update-msg text-sm">
                         Submitted:{" "}
                         {employeeWorkPlan[operationName]?.updatedDataAndTime &&

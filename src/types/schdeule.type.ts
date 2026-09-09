@@ -26,9 +26,13 @@ export interface ProjectResponse {
     title: string;
 }
 
+export type WorkPlanStatus = "pending" | "approved" | "rejected";
+
 export interface SliceResponse {
     updatedDataAndTime: string;
     projectDetail: SingleTask[];
+    status?: WorkPlanStatus;
+    reviewNote?: string;
 }
 
 export interface IndividualSchedule {
@@ -41,4 +45,15 @@ export interface ScheduleSlice {
     data: IndividualSchedule;
     loading: boolean;
     error: string | null;
+}
+
+export interface TeamWorkPlanEntry {
+    id: string;
+    employeeId: string;
+    employeeName: string;
+    designation: string;
+    updatedDataAndTime: string;
+    status: WorkPlanStatus;
+    reviewNote?: string | null;
+    projectDetail: SingleTask[];
 }

@@ -154,6 +154,7 @@ const AddScheduleForm = ({
                 <div className="accordian-head">
                     <Select
                         id="projectName"
+                        data-testid="project-select"
                         size="small"
                         onClick={(e) => e.stopPropagation()}
                         className="custom-select text-sm text-[#667085] "
@@ -206,6 +207,7 @@ const AddScheduleForm = ({
                                             <div className="relative">
                                                 <Select
                                                     id="grid-state"
+                                                    data-testid="task-type-select"
                                                     value={taskType || null}
                                                     onChange={(e) =>
                                                         handleTaskTypeChange(e, taskDetailIndex, "taskType")

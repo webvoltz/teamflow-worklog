@@ -11,7 +11,7 @@ export interface UserDetail {
 type LoginProps = {
     userDetail: UserDetail;
     setUserDetail: (userDetail: UserDetail) => void;
-    handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+    handleSubmit: () => void;
     isLoading: boolean;
     remeberMe: boolean;
     setRememberMe: (e: boolean) => void;

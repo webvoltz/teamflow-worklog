@@ -27,7 +27,7 @@ const AddSchedule = ({ setAddWorkSchedule, setTotalHours, operationName, isCopyS
     const { data: employeeWorkPlan } = useSelector((state: RootState) => state.employeeWorkPlan);
     const { data: userData } = useSelector((state: RootState) => state.user);
     const dispatch = useDispatch<AppDispatch>();
-    const [submitScheduleMutation, { data: submitedData, loading: isSubmitLoading }] = useMutation(SUBMIT_SCHEDULE);
+    const [submitScheduleMutation, { loading: isSubmitLoading }] = useMutation(SUBMIT_SCHEDULE);
     const singleTask: SingleTask = {
         projectName: "",
         projectId: "",
@@ -69,7 +69,7 @@ const AddSchedule = ({ setAddWorkSchedule, setTotalHours, operationName, isCopyS
         }
         const convertedWorkSchedule = convertHoursToFloat(schdeuleWork);
         const userId = userData?.viewer.userId;
-        await submitScheduleMutation({
+        const result = await submitScheduleMutation({
             variables: {
                 userId: userId,
                 schedule: convertedWorkSchedule,
@@ -77,7 +77,11 @@ const AddSchedule = ({ setAddWorkSchedule, setTotalHours, operationName, isCopyS
             },
         }).catch((error) => {
             notification.error({ message: error.message || "An error occurred" });
+            return null;
         });
+        if (!result?.data?.createMyTaskEntry?.success) {
+            return;
+        }
         if (operationName === "update" && vaildateSchedule(tomorrowSchedule, true)) {
             await submitScheduleMutation({
                 variables: {
@@ -89,16 +93,13 @@ const AddSchedule = ({ setAddWorkSchedule, setTotalHours, operationName, isCopyS
                 notification.error({ message: error.message || "An error occurred" });
             });
         }
-        // Just for sample
+        // Refetch (and only then close the form) here, synchronously with the
+        // successful submit - a useEffect keyed on the mutation's own `data`
+        // races against this same submit unmounting AddSchedule via
+        // setAddWorkSchedule(false) and can lose, leaving the redux store stale.
         setAddWorkSchedule(false);
+        userId && dispatch(fetchEmployeeWorkPlan({ userId }));
     };
-
-    useEffect(() => {
-        if (submitedData && Object.keys(submitedData).length > 0) {
-            setAddWorkSchedule(false);
-            userData && dispatch(fetchEmployeeWorkPlan({ userId: userData.viewer.userId }));
-        }
-    }, [submitedData]);
 
     useEffect(() => {
         setTotalHours(calculateProjectTotalHours(workSchedule));

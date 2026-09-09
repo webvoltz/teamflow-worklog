@@ -8,7 +8,7 @@ export const fetchUserData = createAsyncThunk<UserData, void, { rejectValue: Que
     "query/fetchUserData",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await APOLLO_CLIENT.query({ query: GET_USER });
+            const response = await APOLLO_CLIENT.query({ query: GET_USER, fetchPolicy: "network-only" });
             return response.data;
         } catch (error: unknown) {
             let errorMessage = "An unknown error occurred";

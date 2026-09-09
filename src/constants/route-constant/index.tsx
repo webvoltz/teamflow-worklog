@@ -6,4 +6,5 @@ export const ROUTE_CONST = {
     TODAY_TIMESHEET: {
         TIMESHEET: "/time-sheet",
     },
+    APPROVALS: "/approvals",
 };

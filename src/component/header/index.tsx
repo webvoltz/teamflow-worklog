@@ -46,6 +46,8 @@ const Header = () => {
         },
     ];
 
+    const isTeamLeader = data?.viewer?.userrole?.includes("team_leader");
+
     const navItems: MenuProps["items"] = [
         {
             label: (
@@ -57,6 +59,20 @@ const Header = () => {
             key: "today-timesheet",
             title: "",
         },
+        ...(isTeamLeader
+            ? [
+                  {
+                      label: (
+                          <NavLink className={linkClasses} to={ROUTE_CONST.APPROVALS}>
+                              {" "}
+                              Approvals
+                          </NavLink>
+                      ),
+                      key: "approvals",
+                      title: "",
+                  },
+              ]
+            : []),
     ];
 
     return (
