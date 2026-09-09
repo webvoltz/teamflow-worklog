@@ -172,7 +172,7 @@ const AddScheduleForm = ({
                         {taskDetail.map((singleTaskDetail, taskDetailIndex) => {
                             const { description, taskType, hours, taskStatus = "" } = singleTaskDetail;
                             return (
-                                <React.Fragment key={singleTaskDetail.taskType}>
+                                <React.Fragment key={taskDetailIndex}>
                                     <div className="flex flex-wrap -mx-3 items-center pb-3 relative">
                                         <div className="grow  md:mb-0">
                                             <TextArea

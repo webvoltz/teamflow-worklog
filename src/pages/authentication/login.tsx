@@ -31,7 +31,7 @@ const Login = ({ userDetail, setUserDetail, handleSubmit, isLoading, remeberMe, 
                     <h2 className="text-center text-2xl font-bold text-text-color">Login to TeamFlow Worklog</h2>
                     <div className="w-full">
                         <div className="block">
-                            <Form.Item label="Username/Email" name="email" className="block" />
+                            <Form.Item label="Username/Email" className="block" />
                         </div>
                         <Input
                             id="email"
@@ -45,7 +45,7 @@ const Login = ({ userDetail, setUserDetail, handleSubmit, isLoading, remeberMe, 
                     </div>
                     <div className="w-full">
                         <div className="block">
-                            <Form.Item label="Password" name="password" className="text-gray-500" />
+                            <Form.Item label="Password" className="text-gray-500" />
                         </div>
                         <Input.Password
                             iconRender={renderIcon}

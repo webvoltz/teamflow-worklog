@@ -54,6 +54,8 @@ query GetUserSchedule {
     }
     update: getUserSchedule(input: {operationType: "update", userId: "${userId}"}) {
         updatedDataAndTime
+        status
+        reviewNote
         projectDetail {
             projectId
             projectName
