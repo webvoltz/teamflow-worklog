@@ -55,13 +55,18 @@ Log in as the team lead to see Jordan Rivera's sample work update already sittin
 
 ## Tech stack
 
-React 18 · TypeScript · Vite · Apollo Client · GraphQL · Redux Toolkit · Ant Design · Tailwind CSS · MSW · Vitest · React Testing Library
+React 18 · TypeScript (strict) · Vite · Apollo Client · GraphQL · Redux Toolkit · Ant Design · Tailwind CSS · Zod · MSW · Vitest · React Testing Library
+
+## Engineering standards
+
+This repo follows Webvoltz's shared engineering standards at its current stack versions: strict TypeScript, type-aware ESLint (no `any`, no unsafe assignments, typed promise handling), Prettier, Conventional Commits, and a Husky pre-commit gate (Gitleaks → lint-staged → `npm run quality` → build). Install [Gitleaks 8.30.x](https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1) and put it on `PATH` before committing — the pre-commit hook refuses to run without it. Requires Node `>=24 <25` and npm `>=11 <12` (see `.nvmrc`/`engines`).
 
 ## Getting started
 
 ```bash
 npm install
-npm run dev       # starts the app at http://localhost:5173, backed by the mock GraphQL layer
+npm run prepare    # wires up the Husky git hooks (run once after cloning)
+npm run dev         # starts the app at http://localhost:5173, backed by the mock GraphQL layer
 ```
 
 No environment variables are required to run locally — see [`.env.example`](.env.example) if you want to point at a real backend instead.
@@ -69,11 +74,16 @@ No environment variables are required to run locally — see [`.env.example`](.e
 ### Other scripts
 
 ```bash
-npm run build      # type-check and produce a production build
-npm run preview     # preview the production build locally
-npm run lint        # ESLint
-npm test            # run the test suite once (Vitest)
-npm run test:watch  # run tests in watch mode
+npm run build           # type-check and produce a production build
+npm run preview          # preview the production build locally
+npm run quality          # format:check + lint + typecheck (what the pre-commit hook runs)
+npm run format            # apply Prettier
+npm run format:check      # check Prettier formatting without writing
+npm run lint               # ESLint, zero warnings allowed
+npm run typecheck          # tsc -b
+npm test                    # run the test suite once with coverage (Vitest)
+npm run test:watch           # run tests in watch mode
+npm run security:audit        # npm audit, production dependencies only, fails on high severity
 ```
 
 ## Testing
