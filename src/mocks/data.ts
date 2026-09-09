@@ -1,4 +1,4 @@
-import { OperationName, SliceResponse } from "../types/schdeule.type";
+import { OperationName, SliceResponse, TeamWorkPlanEntry, WorkPlanStatus } from "../types/schdeule.type";
 
 export interface SampleUser {
     userId: string;
@@ -74,7 +74,20 @@ const buildInitialStore = (): WorkPlanStore => ({
                 },
             ],
         },
-        update: emptySlice(),
+        update: {
+            updatedDataAndTime: new Date().toISOString(),
+            status: "pending",
+            projectDetail: [
+                {
+                    projectId: "p1",
+                    projectName: "Atlas Redesign",
+                    taskDetail: [
+                        { description: "Finished the settings page layout", taskType: "Development", hours: 5 },
+                        { description: "Addressed review comments", taskType: "Code Review", hours: 1 },
+                    ],
+                },
+            ],
+        },
         tomorrow: emptySlice(),
     },
     "2": {
@@ -105,4 +118,41 @@ export const getWorkPlanEntry = (userId: string): Record<OperationName, SliceRes
 /** Resets all mutable mock state. Called between test cases. */
 export const resetMockData = () => {
     workPlanStore = buildInitialStore();
+};
+
+const workPlanEntryId = (employeeId: string): string => `${employeeId}:update`;
+
+/** Every non-team-lead's "work update" submission, newest-status-first for the review queue. */
+export const listTeamWorkPlans = (): TeamWorkPlanEntry[] =>
+    SAMPLE_USERS.filter((user) => !user.userrole.includes("team_leader"))
+        .map((user) => {
+            const update = getWorkPlanEntry(user.userId).update;
+            if (update.projectDetail.length === 0) return null;
+            const entry: TeamWorkPlanEntry = {
+                id: workPlanEntryId(user.userId),
+                employeeId: user.userId,
+                employeeName: user.name,
+                designation: user.designation,
+                updatedDataAndTime: update.updatedDataAndTime,
+                status: update.status ?? "pending",
+                reviewNote: update.reviewNote,
+                projectDetail: update.projectDetail,
+            };
+            return entry;
+        })
+        .filter((entry): entry is TeamWorkPlanEntry => entry !== null)
+        .sort((a, b) => (a.status === b.status ? 0 : a.status === "pending" ? -1 : 1));
+
+export const reviewWorkPlanEntry = (
+    entryId: string,
+    status: WorkPlanStatus,
+    note?: string
+): { success: boolean; message: string } => {
+    const [employeeId, operation] = entryId.split(":");
+    if (operation !== "update" || !findSampleUserById(employeeId)) {
+        return { success: false, message: "Work plan entry not found." };
+    }
+    const entry = getWorkPlanEntry(employeeId);
+    entry.update = { ...entry.update, status, reviewNote: note };
+    return { success: true, message: `Work plan ${status}.` };
 };

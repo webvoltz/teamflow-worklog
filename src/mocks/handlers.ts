@@ -1,10 +1,12 @@
 import { graphql, HttpResponse } from "msw";
-import { OperationName } from "../types/schdeule.type";
+import { OperationName, WorkPlanStatus } from "../types/schdeule.type";
 import {
     findSampleUserByLogin,
     findSampleUserById,
     getWorkPlanEntry,
+    listTeamWorkPlans,
     OTP_CODE,
+    reviewWorkPlanEntry,
     SAMPLE_PROJECTS,
     SAMPLE_TASK_TYPES,
     SAMPLE_TEAM_PROJECTS,
@@ -83,6 +85,7 @@ export const handlers = [
         entry[operationType] = {
             updatedDataAndTime: new Date().toISOString(),
             projectDetail: schedule as never,
+            status: operationType === "update" ? "pending" : undefined,
         };
         return HttpResponse.json({ data: { createMyTaskEntry: { success: true, message: "Work plan saved." } } });
     }),
@@ -107,4 +110,12 @@ export const handlers = [
     api.query("GetMyCustomPostType", () => HttpResponse.json({ data: { filteredProjects: SAMPLE_PROJECTS } })),
 
     api.query("teamprojects", () => HttpResponse.json({ data: { allmemberProject: SAMPLE_TEAM_PROJECTS } })),
+
+    api.query("GetTeamWorkPlans", () => HttpResponse.json({ data: { teamWorkPlans: listTeamWorkPlans() } })),
+
+    api.mutation("ReviewWorkPlan", async ({ variables }) => {
+        const { entryId, status, note } = variables as { entryId: string; status: WorkPlanStatus; note?: string };
+        const result = reviewWorkPlanEntry(entryId, status, note);
+        return HttpResponse.json({ data: { reviewWorkPlan: { ...result, status } } });
+    }),
 ];
