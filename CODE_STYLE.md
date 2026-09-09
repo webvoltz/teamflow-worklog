@@ -1,6 +1,6 @@
-# InfiteMeals Code Style Guide
+# TeamFlow Worklog Code Style Guide
 
-The InfiniteMeals project tries to follow general coding guidelines and standards to ensure consistency and maintainability across the codebase. As a contributor, it's essential to adhere to these guidelines when making changes or adding new features. Please read and follow the guidelines below:
+TeamFlow Worklog tries to follow general coding guidelines and standards to ensure consistency and maintainability across the codebase. As a contributor, it's essential to adhere to these guidelines when making changes or adding new features. Please read and follow the guidelines below:
 
 ## 1. JavaScript Style
 
