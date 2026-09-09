@@ -1,6 +1,6 @@
-# InfiniteMeals Code of Conduct
+# TeamFlow Worklog Code of Conduct
 
-As contributors and maintainers of the React.js Open Source Project, we pledge to create a friendly, respectful, and inclusive environment for everyone involved. We value the diversity of our community and aim to provide a safe space for collaboration.
+As contributors and maintainers of TeamFlow Worklog, we pledge to create a friendly, respectful, and inclusive environment for everyone involved. We value the diversity of our community and aim to provide a safe space for collaboration.
 
 ## Our Standards
 
@@ -38,4 +38,4 @@ Project maintainers are responsible for enforcing this Code of Conduct. They hav
 
 ## Conclusion
 
-By participating in the Next.js Open Source Project, you agree to abide by this Code of Conduct. Let's work together to create a welcoming and positive community for everyone involved. Thank you for helping make this project an inclusive and respectful space for all.
+By participating in TeamFlow Worklog, you agree to abide by this Code of Conduct. Let's work together to create a welcoming and positive community for everyone involved. Thank you for helping make this project an inclusive and respectful space for all.

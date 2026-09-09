@@ -1,5 +1,5 @@
 import { HiMail, HiOutlineArrowRight } from "react-icons/hi";
-import logo from "../../assets/images/logo_kd.png";
+import logo from "../../assets/images/brand-mark.png";
 import { ChangeEvent } from "react";
 import { Button, Card, Checkbox, Form, Input } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
@@ -28,7 +28,7 @@ const Login = ({ userDetail, setUserDetail, handleSubmit, isLoading, remeberMe, 
             <Card className=" bg-white rounded-lg border-gray-200 border shadow-md p-1.5">
                 <Form className="flex flex-col gap-4 items-center" onFinish={handleSubmit}>
                     <img src={logo} alt="Logo" />
-                    <h2 className="text-center text-2xl font-bold text-text-color">Login to Timesheet</h2>
+                    <h2 className="text-center text-2xl font-bold text-text-color">Login to TeamFlow Worklog</h2>
                     <div className="w-full">
                         <div className="block">
                             <Form.Item label="Username/Email" name="email" className="block" />
@@ -37,7 +37,7 @@ const Login = ({ userDetail, setUserDetail, handleSubmit, isLoading, remeberMe, 
                             id="email"
                             name="userName"
                             prefix={<HiMail />}
-                            placeholder="name@flowbite.com"
+                            placeholder="name@teamflow.dev"
                             required
                             className="bg-gray-50 "
                             onChange={handleInputChange}

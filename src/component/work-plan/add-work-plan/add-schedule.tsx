@@ -148,7 +148,7 @@ const AddSchedule = ({ setAddWorkSchedule, setTotalHours, operationName, isCopyS
             )}
             <div>
                 <div className="flex flex-wrap gap-2 pt-6 justify-center mb-4 mt-6">
-                    <Button onClick={() => setAddWorkSchedule(false)} color="gray" size="large" className="cancel-btn">
+                    <Button onClick={() => setAddWorkSchedule(false)} size="large" className="cancel-btn">
                         Cancel
                     </Button>
                     <Button

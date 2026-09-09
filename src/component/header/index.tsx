@@ -3,8 +3,8 @@ import { Avatar, Dropdown, Menu, Typography } from "antd";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
-import logo from "../../assets/images/logo.png";
 import { CloseIcon, Hamburger } from "../../assets/svg-images";
+import BrandLogo from "../brand-logo";
 import { ROUTE_CONST } from "../../constants/route-constant";
 import { RootState } from "../../store";
 import { capitalizeFirstLetter } from "../../utils/common-functions";
@@ -31,8 +31,8 @@ const Header = () => {
             key: "0",
             label: (
                 <div>
-                    <Text>{data?.viewer?.name ?? "Aliza Testing"}</Text> <br />
-                    <Text ellipsis>{data?.viewer?.email ?? "aliza@gmail.com"}</Text>
+                    <Text>{data?.viewer?.name ?? "Team Member"}</Text> <br />
+                    <Text ellipsis>{data?.viewer?.email ?? ""}</Text>
                 </div>
             ),
         },
@@ -67,8 +67,8 @@ const Header = () => {
                         className="bg-white px-2 py-2.5 dark:border-gray-700 dark:bg-gray-800 sm:px-4 rounded flex items-center gap-2"
                         style={{ display: "Flex" }}
                     >
-                        <a className="flex items-center" href="#">
-                            <img src={logo} alt="Antd React Logo" className="mr-3 h-6 sm:h-9" />
+                        <a className="flex items-center mr-3" href="#">
+                            <BrandLogo />
                         </a>
                         <div
                             className={`mx-auto flex flex-wrap items-center justify-between ${
@@ -89,7 +89,7 @@ const Header = () => {
                         <div className="flex md:order-2 gap-4 ">
                             <div className="space-y-1 text-sm dark:text-white avtar-profile">
                                 <div className="text-[#101828] font-semibold ">
-                                    {capitalizeFirstLetter(data?.viewer?.name ?? "aliza testing") || ""}
+                                    {capitalizeFirstLetter(data?.viewer?.name ?? "team member") || ""}
                                 </div>
                                 <div className="text-sm text-[#667085] mt-0">
                                     {data?.viewer?.userInformation.designation ?? "Designation"}
@@ -114,7 +114,7 @@ const Header = () => {
                                             }}
                                             size={50}
                                         >
-                                            {data?.viewer?.name?.charAt(0).toUpperCase() ?? "AZ"}
+                                            {data?.viewer?.name?.charAt(0).toUpperCase() ?? "TM"}
                                         </Avatar>
                                     )}
                                 </a>
