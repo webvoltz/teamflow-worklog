@@ -1,6 +1,6 @@
 import { Tag } from 'antd';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { FaRegCopy } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { type RootState } from '../../../store';
@@ -29,20 +29,18 @@ interface ViewScheduleProps {
 const ViewSchedule = ({ operationName, viewMode, taskData }: ViewScheduleProps) => {
   const { data: employeeWorkPlan } = useSelector((state: RootState) => state.employeeWorkPlan);
 
-  const [viewData, setViewData] = useState<SingleTask[]>([]);
-  const [tomorrowPlanView, setTomorrowPlanView] = useState<SingleTask[]>([]);
-  useEffect(() => {
+  const viewData = useMemo<SingleTask[]>(() => {
     if (viewMode) {
-      if (taskData) {
-        setViewData(taskData);
-      }
-    } else {
-      setViewData(employeeWorkPlan[operationName].projectDetail);
-      if (operationName === 'update') {
-        setTomorrowPlanView(employeeWorkPlan.tomorrow.projectDetail);
-      }
+      return taskData ?? [];
     }
+    return employeeWorkPlan[operationName].projectDetail;
   }, [employeeWorkPlan, operationName, taskData, viewMode]);
+  const tomorrowPlanView = useMemo<SingleTask[]>(() => {
+    if (!viewMode && operationName === 'update') {
+      return employeeWorkPlan.tomorrow.projectDetail;
+    }
+    return [];
+  }, [employeeWorkPlan, operationName, viewMode]);
 
   return (
     <>

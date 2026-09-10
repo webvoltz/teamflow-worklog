@@ -131,7 +131,7 @@ const Header = () => {
               </Dropdown>
             </div>
             <button className="hamburger" onClick={toggleMenu}>
-              {menuVisible ? CloseIcon : Hamburger}
+              {menuVisible ? <CloseIcon /> : <Hamburger />}
             </button>
           </nav>
         </div>

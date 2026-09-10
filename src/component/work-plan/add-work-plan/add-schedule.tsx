@@ -64,9 +64,12 @@ const AddSchedule = ({
 
   // The "copy from yesterday" effect below intentionally reads the latest
   // employeeWorkPlan without re-running whenever it changes - a ref keeps
-  // that legitimate, without silencing react-hooks/exhaustive-deps.
+  // that legitimate, without silencing react-hooks/exhaustive-deps. Synced in
+  // its own effect (not during render) per react-hooks/refs.
   const employeeWorkPlanRef = useRef(employeeWorkPlan);
-  employeeWorkPlanRef.current = employeeWorkPlan;
+  useEffect(() => {
+    employeeWorkPlanRef.current = employeeWorkPlan;
+  }, [employeeWorkPlan]);
 
   const handleAddProject = useCallback(
     (isTomorrow: boolean) => {

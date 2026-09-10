@@ -1,5 +1,5 @@
 import { Collapse, type CollapseProps, Input, notification, Select } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { HiOutlinePlusCircle } from 'react-icons/hi';
 import { IoMdCloseCircleOutline } from 'react-icons/io';
 import { useSelector } from 'react-redux';
@@ -28,16 +28,26 @@ const AddScheduleForm = ({
   const { data: projectOptionData } = useSelector((state: RootState) => state.projectOption);
   const { taskDetail, projectId, totalHours } = projectDetail;
   const { TextArea } = Input;
-  const [projectOption, setProjectOption] = useState<OptionArray>([
-    { label: 'Project 1', value: 'project1' },
-    { label: 'Project 2', value: 'project2' },
-    { label: 'Project 3', value: 'project3' },
-  ]);
-  const [taskTypeOption, setTaskTypeOption] = useState<OptionArray>([
-    { label: 'Client change', value: 'clientChange' },
-    { label: 'Desgin', value: 'desgin' },
-    { label: 'Development', value: 'developmenet' },
-  ]);
+  const projectOption = useMemo<OptionArray>(() => {
+    if (!projectOptionData) {
+      return [
+        { label: 'Project 1', value: 'project1' },
+        { label: 'Project 2', value: 'project2' },
+        { label: 'Project 3', value: 'project3' },
+      ];
+    }
+    return projectOptionData.map((task) => ({ value: task.id, label: task.title }));
+  }, [projectOptionData]);
+  const taskTypeOption = useMemo<OptionArray>(() => {
+    if (!taskTypeData) {
+      return [
+        { label: 'Client change', value: 'clientChange' },
+        { label: 'Desgin', value: 'desgin' },
+        { label: 'Development', value: 'developmenet' },
+      ];
+    }
+    return taskTypeData.map((task) => ({ value: String(task.termTaxonomyId), label: task.name }));
+  }, [taskTypeData]);
   const billingTypeOption = [
     { value: 'Billable', label: 'Billable' },
     { value: 'Non Billable', label: 'Non Billable' },
@@ -280,26 +290,6 @@ const AddScheduleForm = ({
       ),
     },
   ];
-
-  useEffect(() => {
-    if (taskTypeData) {
-      const arr: OptionArray = [];
-      taskTypeData.map((task) => {
-        arr.push({ value: String(task.termTaxonomyId), label: task.name });
-      });
-      setTaskTypeOption([...arr]);
-    }
-  }, [taskTypeData]);
-
-  useEffect(() => {
-    if (projectOptionData) {
-      const arr: OptionArray = [];
-      projectOptionData.map((task) => {
-        arr.push({ value: task.id, label: task.title });
-      });
-      setProjectOption([...arr]);
-    }
-  }, [projectOptionData]);
 
   return <Collapse items={items} expandIconPlacement="end" defaultActiveKey={[1]} />;
 };
