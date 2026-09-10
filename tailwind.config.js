@@ -1,12 +1,10 @@
-// // tailwind.config.js
-import flowbite from 'flowbite-react/tailwind';
+// tailwind.config.js
 const config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './public/index.html',
-    flowbite.content(),
   ],
   theme: {
     extend: {
@@ -22,6 +20,6 @@ const config = {
       },
     },
   },
-  plugins: [flowbite.plugin()],
+  plugins: [],
 };
 export default config;
