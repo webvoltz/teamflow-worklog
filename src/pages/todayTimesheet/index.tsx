@@ -1,9 +1,8 @@
 import { useEffect, useMemo } from 'react';
+import { Moon, Sunrise } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import morningSchedule from '../../assets/images/morning_schedule.png';
-import nightSchedule from '../../assets/images/night_schedule.png';
-import DisplayDate from '../../component/display-date';
 import Spinner from '../../component/loader';
+import TimesheetOverview from '../../component/timesheet-overview';
 import WorkPlan from '../../component/work-plan';
 import { fetchEmployeeWorkPlan } from '../../redux/slice/employee-work-plan-slice';
 import { fetchProjectOption } from '../../redux/slice/project-option-slice';
@@ -40,11 +39,11 @@ const TodayTimesheet = () => {
   }
   return (
     <Spinner loading={loading}>
-      <DisplayDate />
+      <TimesheetOverview name={userData?.viewer.name} workData={employeeWorkPlan} />
       {/* Work Schedule */}
       <WorkPlan
         scheduleTitle={'Work schedule'}
-        scheduleicon={morningSchedule}
+        scheduleicon={<Sunrise className="h-6 w-6" />}
         operationName={'schedule'}
         isWorkExist={isWorkScheduleExist}
         workData={employeeWorkPlan}
@@ -55,7 +54,7 @@ const TodayTimesheet = () => {
           <WorkPlan
             scheduleTitle={'Work update'}
             operationName={'update'}
-            scheduleicon={nightSchedule}
+            scheduleicon={<Moon className="h-6 w-6" />}
             isWorkExist={isWorkUpdateExist}
             workData={employeeWorkPlan}
           />

@@ -1,10 +1,10 @@
-import { Button } from 'antd';
 import { useState } from 'react';
 import { FaRegCopy } from 'react-icons/fa';
 import { HiPlus } from 'react-icons/hi';
 import { type OperationName } from '../../../types/schdeule.type';
 import AddSchedule from './add-schedule';
 import ViewSchedule from '../view-work-plan';
+import { Button } from '../../ui/button';
 
 interface AccordionContentProps {
   addWorkSchedule: boolean;
@@ -35,31 +35,38 @@ const AccordionContent = ({
     return <ViewSchedule operationName={operationName} />;
   }
   return (
-    <div className="flex flex-wrap gap-2 justify-center">
-      <Button
-        size="large"
-        className="border-primary focus:ring-0 text-primary btn-add bg-transparent enabled:hover:bg-primary"
-        onClick={() => {
-          setAddWorkSchedule(true);
-          setIsCopyScheduleData(false);
-        }}
-      >
-        <HiPlus className="mr-2 h-5 w-5" />{' '}
-        {operationName === 'schedule' ? 'Add new schedule' : 'Add Timesheet'}
-      </Button>
-      {operationName === 'schedule' && (
+    <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-border py-8">
+      <p className="text-sm text-muted-foreground">
+        {operationName === 'schedule'
+          ? "You haven't logged any work for today yet."
+          : "You haven't submitted a work update yet."}
+      </p>
+      <div className="flex flex-wrap gap-2 justify-center">
         <Button
           size="large"
-          type="primary"
-          className="bg-primary focus:ring-0 enabled:hover:bg-transparent hover:border-primary btn-copy"
+          className="border-primary focus:ring-0 text-primary btn-add bg-transparent enabled:hover:bg-primary"
           onClick={() => {
-            setIsCopyScheduleData(true);
             setAddWorkSchedule(true);
+            setIsCopyScheduleData(false);
           }}
         >
-          <FaRegCopy className="mr-2 h-5 w-5" /> Copy from yesterday
+          <HiPlus className="mr-2 h-5 w-5" />{' '}
+          {operationName === 'schedule' ? 'Add new schedule' : 'Add Timesheet'}
         </Button>
-      )}
+        {operationName === 'schedule' && (
+          <Button
+            size="large"
+            variant="primary"
+            className="bg-primary focus:ring-0 enabled:hover:bg-transparent hover:border-primary btn-copy"
+            onClick={() => {
+              setIsCopyScheduleData(true);
+              setAddWorkSchedule(true);
+            }}
+          >
+            <FaRegCopy className="mr-2 h-5 w-5" /> Copy from yesterday
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

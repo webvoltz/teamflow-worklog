@@ -6,12 +6,14 @@ import { Provider } from 'react-redux';
 import { store } from './store';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import dayjs from 'dayjs';
+import { Toaster } from './component/ui/toast';
 
 dayjs.extend(advancedFormat);
 function App() {
   return (
     <Provider store={store}>
       <ApolloProvider client={APOLLO_CLIENT}>
+        <Toaster />
         <RouteList />
       </ApolloProvider>
     </Provider>

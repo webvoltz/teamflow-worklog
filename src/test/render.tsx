@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import rootReducer from '../redux';
 import { createApolloClient } from '../services/apollo';
+import { Toaster } from '../component/ui/toast';
 
 export const createTestStore = () => configureStore({ reducer: rootReducer });
 
@@ -24,7 +25,10 @@ export function renderWithProviders(
     return (
       <Provider store={store}>
         <ApolloProvider client={apolloClient}>
-          <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
+          <MemoryRouter initialEntries={[route]}>
+            <Toaster />
+            {children}
+          </MemoryRouter>
         </ApolloProvider>
       </Provider>
     );

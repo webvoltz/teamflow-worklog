@@ -1,23 +1,27 @@
-import type { InputRef } from 'antd';
-import { Button, Card, Form, Input } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { HiCheckCircle } from 'react-icons/hi';
-import icon from '../../assets/images/otp_icon.png';
+import logo from '../../assets/images/brand-mark.png';
+import { Alert } from '../../component/ui/alert';
+import { Button } from '../../component/ui/button';
+import { Card } from '../../component/ui/card';
+import { Input } from '../../component/ui/input';
 
 interface OtpVerificationProps {
   handleOtpSubmit: (otp: string) => void;
   isLoading: boolean;
   resentOtp: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  error?: string | null | undefined;
 }
 
 const OtpVerification: React.FC<OtpVerificationProps> = ({
   handleOtpSubmit,
   isLoading,
   resentOtp,
+  error,
 }) => {
   const OTP_LENGTH = 6;
   const [otp, setOtp] = useState<string[]>(new Array(OTP_LENGTH).fill(''));
-  const inputRefs = useRef<(InputRef | null)[]>([]);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const isPasting = useRef(false); // flag to track paste events
 
   useEffect(() => {
@@ -68,17 +72,28 @@ const OtpVerification: React.FC<OtpVerificationProps> = ({
   };
 
   return (
-    <div className="max-w-sm mx-auto w-full px-3">
-      <Card className=" bg-white rounded-lg border-gray-200 border shadow-md p-1.5">
-        <Form
-          className="flex  flex-col gap-4 items-center"
-          onFinish={() => {
+    <div className="max-w-md mx-auto w-full px-3">
+      <Card className="bg-white rounded-lg border-gray-200 border shadow-md p-6 sm:p-8">
+        <form
+          className="flex flex-col gap-6 items-center"
+          onSubmit={(e) => {
+            e.preventDefault();
             handleOtpSubmit(otp.join(''));
           }}
         >
-          <img src={icon} alt="Logo" />
-          <h2 className="text-center text-2xl font-bold text-text-color"> OTP Verification</h2>
-          <p className="text-sm text-[#111928]">We have sent an OTP to your registered email</p>
+          <div className="flex flex-col items-center gap-3">
+            <img src={logo} alt="Logo" />
+            <h2 className="text-center text-2xl font-bold text-text-color">OTP Verification</h2>
+            <p className="text-sm text-[#111928]">We have sent an OTP to your registered email</p>
+          </div>
+          {error && (
+            <Alert
+              variant="error"
+              className="w-full transition-all duration-300 starting:-translate-y-1 starting:opacity-0"
+            >
+              {error}
+            </Alert>
+          )}
           <div className="w-full flex justify-between otpinput">
             {otp.map((value, index) => (
               <Input
@@ -116,8 +131,8 @@ const OtpVerification: React.FC<OtpVerificationProps> = ({
           </div>
           <Button
             size="large"
-            type="primary"
-            htmlType="submit"
+            variant="primary"
+            type="submit"
             className="justify-center focus:ring-0 transition ease-in-out w-full bg-primary border font-bold text-sm enabled:hover:bg-transparent enabled:hover:text-primary hover:border-primary"
             loading={isLoading}
           >
@@ -131,7 +146,7 @@ const OtpVerification: React.FC<OtpVerificationProps> = ({
               Go back to login
             </a>
           </p>
-        </Form>
+        </form>
       </Card>
     </div>
   );

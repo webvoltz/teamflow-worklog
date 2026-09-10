@@ -1,5 +1,5 @@
-import { notification } from 'antd';
 import { type SingleTask, type SingleTaskDetail } from '../types/schdeule.type';
+import { notify } from './notify';
 
 export const vaildateSchedule = (workSchedule: SingleTask[], isShowMessage?: boolean) => {
   const changeField = workSchedule[workSchedule.length - 1];
@@ -8,13 +8,13 @@ export const vaildateSchedule = (workSchedule: SingleTask[], isShowMessage?: boo
   }
   if (changeField.projectName === '') {
     if (!isShowMessage) {
-      notification.error({ title: 'Project Name should not be empty' });
+      notify.error('Project Name should not be empty');
     }
     return false;
   }
   if (!validateTaskDetail(changeField.taskDetail)) {
     if (!isShowMessage) {
-      notification.error({ title: 'Task description and task type should not be empty' });
+      notify.error('Task description and task type should not be empty');
     }
     return false;
   }

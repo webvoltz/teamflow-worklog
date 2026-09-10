@@ -1,5 +1,4 @@
 import { useMutation } from '@apollo/client/react';
-import { Button, notification } from 'antd';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +13,8 @@ import {
   convertHoursToFloat,
   removeTotalHours,
 } from '../../../utils/date-time-calculation';
+import { notify } from '../../../utils/notify';
+import { Button } from '../../ui/button';
 import AddProjectForm from './add-project-form';
 
 interface AddScheduleProps {
@@ -93,7 +94,7 @@ const AddSchedule = ({
         operationType: operationName,
       },
     }).catch((error: unknown) => {
-      notification.error({ title: error instanceof Error ? error.message : 'An error occurred' });
+      notify.error(error instanceof Error ? error.message : 'An error occurred');
       return null;
     });
     if (!result?.data?.createMyTaskEntry.success) {
@@ -107,9 +108,7 @@ const AddSchedule = ({
           operationType: 'tomorrow',
         },
       }).catch((error: unknown) => {
-        notification.error({
-          title: error instanceof Error ? error.message : 'An error occurred',
-        });
+        notify.error(error instanceof Error ? error.message : 'An error occurred');
       });
     }
     // Refetch (and only then close the form) here, synchronously with the
@@ -189,7 +188,7 @@ const AddSchedule = ({
               void handleSubmitSchedule();
             }}
             loading={isSubmitLoading}
-            type="primary"
+            variant="primary"
           >
             <FaCheckCircle className="w-5 h-5 mr-2" />
             Submit

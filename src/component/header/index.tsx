@@ -1,10 +1,17 @@
-import type { MenuProps } from 'antd';
-import { Avatar, Dropdown, Menu, Typography } from 'antd';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 import { CloseIcon, Hamburger } from '../../assets/svg-images';
 import BrandLogo from '../brand-logo';
+import { Avatar } from '../ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
 import { ROUTE_CONST } from '../../constants/route-constant';
 import { type RootState } from '../../store';
 import { capitalizeFirstLetter } from '../../utils/common-functions';
@@ -12,11 +19,10 @@ import { clearLocalStorage } from '../../utils/local-storage';
 
 const Header = () => {
   const { data } = useSelector((state: RootState) => state.user);
-  const { Text } = Typography;
   const [menuVisible, setMenuVisible] = useState(false);
 
   const linkClasses =
-    'text-black text-base md:text-black custom-hover border-b-2 border-transparent';
+    'text-black text-base font-medium rounded-lg px-3 py-1.5 transition-colors md:hover:bg-muted aria-[current=page]:bg-primary/10 aria-[current=page]:text-primary aria-[current=page]:font-semibold';
   const handleSignOut = () => {
     clearLocalStorage();
     // Full reload (rather than a client-side navigate) so the redux store and Apollo
@@ -28,54 +34,7 @@ const Header = () => {
     setMenuVisible(!menuVisible);
   };
 
-  const items: MenuProps['items'] = [
-    {
-      key: '0',
-      label: (
-        <div>
-          <Text>{data?.viewer.name ?? 'Team Member'}</Text> <br />
-          <Text ellipsis>{data?.viewer.email ?? ''}</Text>
-        </div>
-      ),
-    },
-    {
-      type: 'divider',
-    },
-    {
-      label: 'Sign out',
-      onClick: handleSignOut,
-      key: '2',
-    },
-  ];
-
   const isTeamLeader = data?.viewer.userrole.includes('team_leader');
-
-  const navItems: MenuProps['items'] = [
-    {
-      label: (
-        <NavLink className={linkClasses} to={ROUTE_CONST.INITIAL_ROUTE}>
-          {' '}
-          Today’s Timesheet
-        </NavLink>
-      ),
-      key: 'today-timesheet',
-      title: '',
-    },
-    ...(isTeamLeader
-      ? [
-          {
-            label: (
-              <NavLink className={linkClasses} to={ROUTE_CONST.APPROVALS}>
-                {' '}
-                Approvals
-              </NavLink>
-            ),
-            key: 'approvals',
-            title: '',
-          },
-        ]
-      : []),
-  ];
 
   return (
     <div className="border-b">
@@ -96,12 +55,22 @@ const Header = () => {
               <div
                 className={`mt-4 flex flex-col md:mt-0 md:flex-row md:space-x-8 md:text-sm md:font-medium`}
               >
-                <Menu
-                  className="main-menu flex"
-                  mode="inline"
-                  inlineCollapsed={menuVisible}
-                  items={navItems}
-                />
+                <ul className="main-menu flex">
+                  <li>
+                    <NavLink end className={linkClasses} to={ROUTE_CONST.INITIAL_ROUTE}>
+                      {' '}
+                      Today’s Timesheet
+                    </NavLink>
+                  </li>
+                  {isTeamLeader && (
+                    <li>
+                      <NavLink className={linkClasses} to={ROUTE_CONST.APPROVALS}>
+                        {' '}
+                        Approvals
+                      </NavLink>
+                    </li>
+                  )}
+                </ul>
               </div>
             </div>
             <div className="flex md:order-2 gap-4 ">
@@ -113,22 +82,23 @@ const Header = () => {
                   {data?.viewer.userInformation.designation ?? 'Designation'}
                 </div>
               </div>
-              <Dropdown menu={{ items }} trigger={['click']}>
-                <button type="button" className="ant-dropdown-link">
+              <DropdownMenu>
+                <DropdownMenuTrigger render={<button type="button" className="dropdown-trigger" />}>
                   {data?.viewer.avatar.url ? (
                     <Avatar size={50} src={data.viewer.avatar.url} />
                   ) : (
-                    <Avatar
-                      style={{
-                        verticalAlign: 'middle',
-                      }}
-                      size={50}
-                    >
-                      {data?.viewer.name.charAt(0).toUpperCase() ?? 'TM'}
-                    </Avatar>
+                    <Avatar size={50}>{data?.viewer.name.charAt(0).toUpperCase() ?? 'TM'}</Avatar>
                   )}
-                </button>
-              </Dropdown>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>
+                    <div>{data?.viewer.name ?? 'Team Member'}</div>
+                    <div className="truncate">{data?.viewer.email ?? ''}</div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <button className="hamburger" onClick={toggleMenu}>
               {menuVisible ? <CloseIcon /> : <Hamburger />}

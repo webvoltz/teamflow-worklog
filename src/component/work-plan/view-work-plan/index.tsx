@@ -1,4 +1,3 @@
-import { Tag } from 'antd';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { FaRegCopy } from 'react-icons/fa';
@@ -12,9 +11,10 @@ import {
 import { capitalizeFirstLetter } from '../../../utils/common-functions';
 import { CopySingleWork } from '../../../utils/copy-work';
 import { calculateTaskTotalHours } from '../../../utils/date-time-calculation';
+import { Badge, type BadgeProps } from '../../ui/badge';
 import { TomorrowPlan } from './tomorrow-plan';
 
-const STATUS_COLOR: Record<WorkPlanStatus, string> = {
+const STATUS_COLOR: Record<WorkPlanStatus, NonNullable<BadgeProps['color']>> = {
   pending: 'gold',
   approved: 'green',
   rejected: 'red',
@@ -103,9 +103,9 @@ const ViewSchedule = ({ operationName, viewMode, taskData }: ViewScheduleProps) 
           <p className="update-msg text-sm flex items-center gap-2">
             Thank you for your submission.
             {employeeWorkPlan.update.status && (
-              <Tag color={STATUS_COLOR[employeeWorkPlan.update.status]} className="uppercase">
+              <Badge color={STATUS_COLOR[employeeWorkPlan.update.status]} className="uppercase">
                 {employeeWorkPlan.update.status}
-              </Tag>
+              </Badge>
             )}
           </p>
           {employeeWorkPlan.update.reviewNote && (

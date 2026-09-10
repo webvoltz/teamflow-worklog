@@ -1,5 +1,4 @@
-import { Collapse, type CollapseProps, Input, notification, Select } from 'antd';
-import React, { useMemo } from 'react';
+import { type ChangeEvent, useMemo } from 'react';
 import { HiOutlinePlusCircle } from 'react-icons/hi';
 import { IoMdCloseCircleOutline } from 'react-icons/io';
 import { useSelector } from 'react-redux';
@@ -8,6 +7,11 @@ import { type OptionArray } from '../../types/common.type';
 import { type SingleTask } from '../../types/schdeule.type';
 import { validateTaskDetail } from '../../utils/common-functions';
 import { calculateTaskTotalHours } from '../../utils/date-time-calculation';
+import { cn } from '../../utils/cn';
+import { notify } from '../../utils/notify';
+import { Accordion } from '../ui/accordion';
+import { Input, Textarea } from '../ui/input';
+import { Select } from '../ui/select';
 
 interface AddScheduleFormProps {
   workSchedule: SingleTask[];
@@ -27,7 +31,6 @@ const AddScheduleForm = ({
   const { data: taskTypeData } = useSelector((state: RootState) => state.taskType);
   const { data: projectOptionData } = useSelector((state: RootState) => state.projectOption);
   const { taskDetail, projectId, totalHours } = projectDetail;
-  const { TextArea } = Input;
   const projectOption = useMemo<OptionArray>(() => {
     if (!projectOptionData) {
       return [
@@ -67,7 +70,7 @@ const AddScheduleForm = ({
   };
 
   const handleTaskDetailChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     taskDetailIndex: number,
   ) => {
     const { value, name } = e.target;
@@ -131,7 +134,7 @@ const AddScheduleForm = ({
     const current = changeDetail[projectIndex];
     if (!current) return;
     if (!validateTaskDetail(current.taskDetail)) {
-      notification.error({ title: 'Task description and task type should not be empty' });
+      notify.error('Task description and task type should not be empty');
       return;
     }
     const updatedTaskDetail = [...current.taskDetail, { description: '', taskType: '', hours: 0 }];
@@ -160,138 +163,118 @@ const AddScheduleForm = ({
     setWorkSchedule(changeDetail);
   };
 
-  const items: CollapseProps['items'] = [
-    {
-      key: '1',
-      label: (
-        <div className="accordian-head">
-          <Select
-            id="projectName"
-            data-testid="project-select"
-            size="small"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            className="custom-select text-sm text-[#667085] "
-            value={projectId ?? null}
-            onChange={(value) => {
-              handleProjectSelectChange(value);
-            }}
-            placeholder="Client / Project Name"
-            options={projectOption}
-          />
-          <div className="font-bold text-black">{totalHours}h</div>
-        </div>
-      ),
-      children: (
-        <div className="p-0">
-          <form className="w-full custom-form ">
-            {taskDetail.map((singleTaskDetail, taskDetailIndex) => {
-              const { description, taskType, hours, taskStatus = '' } = singleTaskDetail;
-              return (
-                <React.Fragment key={taskDetailIndex}>
-                  <div className="flex flex-wrap -mx-3 items-center pb-3 relative">
-                    <div className="grow  md:mb-0">
-                      <TextArea
-                        id="grid-city"
-                        placeholder="Enter task details"
-                        value={description}
-                        name="description"
-                        onChange={(e) => {
-                          handleTaskDetailChange(e, taskDetailIndex);
+  const header = (
+    <div className="accordian-head">
+      <Select
+        id="projectName"
+        data-testid="project-select"
+        size="small"
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        className="custom-select text-sm text-[#667085] "
+        value={projectId ?? null}
+        onChange={(value) => {
+          handleProjectSelectChange(value);
+        }}
+        placeholder="Client / Project Name"
+        options={projectOption}
+      />
+      <div className="font-bold text-black">{totalHours}h</div>
+    </div>
+  );
+
+  return (
+    <Accordion header={header}>
+      <div className="p-0">
+        <form className="w-full">
+          {taskDetail.map((singleTaskDetail, taskDetailIndex) => {
+            const { description, taskType, hours, taskStatus = '' } = singleTaskDetail;
+            return (
+              <div
+                key={taskDetailIndex}
+                className={cn(
+                  'grid grid-cols-1 gap-3 border-b border-border py-3 last:border-b-0 md:items-center',
+                  showBillingType
+                    ? 'md:grid-cols-[minmax(0,1fr)_11.25rem_11.25rem_10rem_auto]'
+                    : 'md:grid-cols-[minmax(0,1fr)_11.25rem_10rem_auto]',
+                )}
+              >
+                <Textarea
+                  id="grid-city"
+                  placeholder="Enter task details"
+                  value={description}
+                  name="description"
+                  onChange={(e) => {
+                    handleTaskDetailChange(e, taskDetailIndex);
+                  }}
+                />
+                {showBillingType && (
+                  <Select
+                    id="grid-state"
+                    value={taskStatus || null}
+                    onChange={(e) => {
+                      handleTaskTypeChange(e, taskDetailIndex, 'taskStatus');
+                    }}
+                    options={billingTypeOption}
+                    placeholder="Select billing type"
+                  />
+                )}
+                <Select
+                  id="grid-state"
+                  data-testid="task-type-select"
+                  value={taskType || null}
+                  onChange={(e) => {
+                    handleTaskTypeChange(e, taskDetailIndex, 'taskType');
+                  }}
+                  options={taskTypeOption}
+                  placeholder="Select task type"
+                />
+                <Input
+                  id="grid-zip"
+                  type="text"
+                  placeholder="Enter hours"
+                  suffix="Hours"
+                  value={hours}
+                  name="hours"
+                  onChange={(e) => {
+                    handleTaskDetailChange(e, taskDetailIndex);
+                  }}
+                />
+                <div className="flex items-center justify-end gap-1">
+                  {taskDetail.length === 1 || taskDetail.length - 1 === taskDetailIndex ? (
+                    <>
+                      <HiOutlinePlusCircle
+                        className="h-7 w-7 cursor-pointer text-muted-foreground hover:text-primary"
+                        onClick={() => {
+                          handleAddMoreTask();
                         }}
                       />
-                    </div>
-                    {showBillingType && (
-                      <div className=" md:mb-0">
-                        <div className="relative">
-                          <Select
-                            id="grid-state"
-                            value={taskStatus || null}
-                            onChange={(e) => {
-                              handleTaskTypeChange(e, taskDetailIndex, 'taskStatus');
-                            }}
-                            options={billingTypeOption}
-                            placeholder="Select billing type"
-                          />
-                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    <div className=" md:mb-0">
-                      <div className="relative">
-                        <Select
-                          id="grid-state"
-                          data-testid="task-type-select"
-                          value={taskType || null}
-                          onChange={(e) => {
-                            handleTaskTypeChange(e, taskDetailIndex, 'taskType');
-                          }}
-                          options={taskTypeOption}
-                          placeholder="Select task type"
-                        />
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                    <div className=" md:mb-0">
-                      <Input
-                        id="grid-zip"
-                        type="text"
-                        placeholder="Enter hours"
-                        suffix="Hours"
-                        value={hours}
-                        name="hours"
-                        onChange={(e) => {
-                          handleTaskDetailChange(e, taskDetailIndex);
-                        }}
-                      />
-                    </div>
-                    <div className="cursor-pointer plus-close">
-                      {taskDetail.length === 1 || taskDetail.length - 1 === taskDetailIndex ? (
-                        <>
-                          <HiOutlinePlusCircle
-                            className="ml-2 h-7 w-7 "
-                            onClick={() => {
-                              handleAddMoreTask();
-                            }}
-                          />
-                          {taskDetail.length !== 1 && taskDetail.length - 1 === taskDetailIndex && (
-                            <IoMdCloseCircleOutline
-                              className="ml-2 h-7 w-7"
-                              onClick={() => {
-                                handleRemoveTask(taskDetailIndex);
-                              }}
-                            />
-                          )}
-                        </>
-                      ) : (
+                      {taskDetail.length !== 1 && taskDetail.length - 1 === taskDetailIndex && (
                         <IoMdCloseCircleOutline
-                          className="ml-2 h-7 w-7"
+                          className="h-7 w-7 cursor-pointer text-muted-foreground hover:text-destructive"
                           onClick={() => {
                             handleRemoveTask(taskDetailIndex);
                           }}
                         />
                       )}
-                    </div>
-                  </div>
-                </React.Fragment>
-              );
-            })}
-          </form>
-        </div>
-      ),
-    },
-  ];
-
-  return <Collapse items={items} expandIconPlacement="end" defaultActiveKey={[1]} />;
+                    </>
+                  ) : (
+                    <IoMdCloseCircleOutline
+                      className="h-7 w-7 cursor-pointer text-muted-foreground hover:text-destructive"
+                      onClick={() => {
+                        handleRemoveTask(taskDetailIndex);
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </form>
+      </div>
+    </Accordion>
+  );
 };
 
 export default AddScheduleForm;

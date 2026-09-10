@@ -36,32 +36,61 @@ states - rather than to be a product in its own right.
 
 ## 📸 Screenshots
 
-All captured from the app running locally against the mock GraphQL layer (`npm run dev`) at the
-default responsive breakpoint.
+All captured from the app running locally against the mock GraphQL layer (`npm run dev`), walking
+through both sample accounts end to end.
 
-|                                             |                                                                                           |
-| ------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| ![Login screen](docs/screenshots/login.png) | ![Employee timesheet with a pending work update](docs/screenshots/employee-timesheet.png) |
-| The OTP-style login screen.                 | An employee's daily timesheet, with today's work schedule and a pending work update.      |
+### Authentication
 
-![Team lead reviewing a pending work update](docs/screenshots/team-approvals.png)
+|                                                                                 |                                                                               |
+| ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| ![Login screen](docs/screenshots/login.png)                                     | ![Login with an invalid-credentials error](docs/screenshots/login-error.png)  |
+| The login screen.                                                               | A failed login - the error renders inline on the form, not as a corner toast. |
+| ![OTP verification screen](docs/screenshots/otp-verification.png)               |                                                                               |
+| The 6-digit OTP step, with the "OTP sent" confirmation toast visible top-right. |                                                                               |
 
-The team lead's Approvals queue, with Jordan Rivera's sample work update awaiting review.
+### Employee view (`jordan.rivera`)
+
+![Employee timesheet with a pending work update](docs/screenshots/employee-timesheet.png)
+
+Today's stats, the submitted work schedule, and a work update already sitting at **pending**
+review.
+
+### Team lead view (`morgan.lee`)
+
+|                                                                                                       |                                                                                                                          |
+| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| ![Team lead's own timesheet, work update not yet submitted](docs/screenshots/team-lead-timesheet.png) | The team lead's own timesheet - note the extra **Approvals** nav item, and the empty work-update state's call to action. |
+| ![Header profile menu open](docs/screenshots/profile-dropdown.png)                                    | The profile menu.                                                                                                        |
+
+![Filling in a work update, with project and task-type selects open](docs/screenshots/add-schedule-form.png)
+
+Filling in a work update: project and task-type selects, an hours field, and a second
+"Tomorrow's Plan" section, all in a responsive grid that never overflows its card.
+
+### Approval workflow
+
+|                                                                                   |                                                                                          |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| ![Team Approvals queue with a pending entry](docs/screenshots/team-approvals.png) | The Approvals queue, with Jordan Rivera's update awaiting review.                        |
+| ![Reject dialog with an optional note field](docs/screenshots/reject-dialog.png)  | Rejecting a work update, with an optional note back to the employee.                     |
+| ![The same entry immediately after approval](docs/screenshots/approve-toast.png)  | The same entry right after approval - the status badge updates in place, no page reload. |
 
 ## 🧰 Tech stack
 
-| Technology                                    | Role                                          |
-| --------------------------------------------- | --------------------------------------------- |
-| React 18                                      | UI                                            |
-| TypeScript (strict)                           | Type safety                                   |
-| Vite                                          | Dev server and production build               |
-| Apollo Client / GraphQL                       | Data fetching and caching                     |
-| Redux Toolkit                                 | Application state, per-domain slices          |
-| Ant Design + Tailwind CSS                     | UI components and styling                     |
-| Zod                                           | Runtime validation (env vars, mock variables) |
-| MSW (Mock Service Worker)                     | Standalone mock GraphQL backend               |
-| Vitest + Testing Library                      | Unit and integration tests                    |
-| ESLint, Prettier, Husky, commitlint, Gitleaks | Code quality and security gates               |
+| Technology                                    | Role                                                                          |
+| --------------------------------------------- | ----------------------------------------------------------------------------- |
+| React 19                                      | UI                                                                            |
+| TypeScript 6 (strict)                         | Type safety                                                                   |
+| Vite                                          | Dev server and production build                                               |
+| Apollo Client / GraphQL                       | Data fetching and caching                                                     |
+| Redux Toolkit                                 | Application state, per-domain slices                                          |
+| [Base UI](https://base-ui.com) + Tailwind CSS | Headless UI primitives styled as this app's own `component/ui/` design system |
+| [Sonner](https://sonner.emilkowal.ski/)       | Toast notifications                                                           |
+| lucide-react                                  | Icons                                                                         |
+| Zod                                           | Runtime validation (env vars, mock variables)                                 |
+| MSW (Mock Service Worker)                     | Standalone mock GraphQL backend                                               |
+| Vitest + Testing Library                      | Unit and integration tests                                                    |
+| ESLint, Prettier, Husky, commitlint, Gitleaks | Code quality and security gates                                               |
 
 ## 🏗️ Architecture
 
@@ -93,6 +122,8 @@ other code changes needed.
 ```text
 src/
   component/     Presentational + feature components - header, work-plan forms, team-approvals
+    ui/          Shared design system - button, input, select, dialog, accordion, toast, etc.,
+                 built on Base UI primitives and this app's Tailwind tokens (src/index.css)
   pages/         Route-level screens - authentication, todayTimesheet, teamApprovals
   graphql/       gql query/mutation documents, one file per domain
   redux/slice/   Redux Toolkit slices + async thunks, one per data domain
@@ -223,7 +254,7 @@ mock layer is bypassed.
 | `npm run quality`                 | Format check, lint, and typecheck (what the pre-commit hook runs). |
 | `npm run format` / `format:check` | Prettier write / check.                                            |
 | `npm run lint`                    | ESLint, zero warnings allowed.                                     |
-| `npm run typecheck`               | `tsc -b`.                                                          |
+| `npm run typecheck`               | `tsc`.                                                             |
 | `npm test`                        | Vitest with coverage.                                              |
 | `npm run test:watch`              | Vitest in watch mode.                                              |
 | `npm run security:audit`          | `npm audit --omit=dev --audit-level=high`.                         |
@@ -236,7 +267,7 @@ components. Coverage thresholds (90% statements, 85% branches, 100% functions, 9
 enforced in `vite.config.ts`, scoped to `src/config/env.ts` - currently 100% across the board:
 
 - `src/pages/authentication/__tests__/authentication.test.tsx` - the login → OTP happy path, and
-  an invalid OTP producing an error notification without ever storing a token.
+  an invalid OTP surfacing an inline form error without ever storing a token.
 - `src/component/work-plan/__tests__/add-schedule.test.tsx` - adding a new work schedule end to
   end: filling the project/task-type selects and hours field, submitting, and seeing it rendered.
 - `src/pages/teamApprovals/__tests__/team-approvals.test.tsx` - a team lead approving a pending
@@ -249,23 +280,39 @@ enforced in `vite.config.ts`, scoped to `src/config/env.ts` - currently 100% acr
 
 ## 🔒 Code quality and security
 
-This repo follows the Webvoltz React engineering standards at its current stack versions (React
-18, Vite 5, TypeScript 5, ESLint 8, not the standard's newer pins): strict TypeScript (no `any`,
-the full `strict` compiler family), a flat ESLint config with type-aware rules plus React/hooks/
-a11y plugins, Prettier, and exact pinned dependency versions. A Husky pre-commit hook runs Gitleaks
-secret scanning, `lint-staged`, the full `quality` check, and a production build before any commit
-is allowed through; `commit-msg` enforces Conventional Commits via commitlint. The same gates run
-in CI (`.github/workflows/ci.yml`) - secret scan and dependency audit first, then quality and
-commit-message lint, then tests, then the production build.
+This repo follows the Webvoltz React engineering standards: strict TypeScript (no `any`, the full
+`strict` compiler family, `exactOptionalPropertyTypes`, `skipLibCheck: false`), a flat ESLint
+config with type-aware rules plus React/hooks/a11y plugins, Prettier, and exact pinned dependency
+versions. A Husky pre-commit hook runs Gitleaks secret scanning, `lint-staged`, the full `quality`
+check, and a production build before any commit is allowed through; `commit-msg` enforces
+Conventional Commits via commitlint. The same gates run in CI (`.github/workflows/ci.yml`) - secret
+scan and dependency audit first, then quality and commit-message lint, then tests, then the
+production build.
 
-`skipLibCheck` is `true` here, one deliberate deviation from the standard (which requires `false`):
-with `exactOptionalPropertyTypes` on, antd/rc-picker/rc-cascader/redux-toolkit/vite/vitest's own
-bundled `.d.ts` files fail to type-check under this repo's TypeScript version - none of that is
-code this project can fix. `security:audit` runs with `--omit=dev`, since the only remaining
-advisories are in build/test-only tooling (the esbuild/vite/vitest chain) that's never shipped.
+`skipLibCheck: false` means every third-party `.d.ts` is type-checked too, not just this project's
+own code. Only one dependency fails that check on its own terms: `@reduxjs/toolkit`'s bundled types
+don't satisfy `exactOptionalPropertyTypes` (confirmed upstream - a maintainer's stance is that
+consumers should set `skipLibCheck: true`, which this project deliberately doesn't). A single
+patch-package patch (`patches/@reduxjs+toolkit+*.patch`) fixes just that file's types rather than
+relaxing the project-wide setting. `security:audit` runs with `--omit=dev`, since the only
+remaining advisories are in build/test-only tooling (the esbuild/vite/vitest chain) that's never
+shipped.
 
 ## 🧠 Design decisions
 
+- **A small in-house `component/ui/` layer instead of a component library** - `Button`, `Input`,
+  `Select`, `Dialog`, `Accordion`, `Toast`, etc. are thin wrappers around
+  [Base UI](https://base-ui.com)'s unstyled interaction primitives, styled with Tailwind and this
+  app's own design tokens (`src/index.css`). There's no visual component library dependency (the
+  app used to ship Ant Design; it was fully removed) - only headless behavior plus this project's
+  own styling, so the look is never dictated by someone else's defaults.
+- **Sonner for toasts, not a hand-built one** - toast notifications need real polish (enter/exit
+  animation, swipe-to-dismiss, stacking, auto-dismiss timing) that isn't worth reinventing on top
+  of a headless primitive; `src/utils/notify.ts` wraps Sonner's own imperative `toast()` API behind
+  `notify.success/error/open()` so the rest of the app never imports Sonner directly.
+- **Inline form errors, not toasts, for login/OTP failures** - a failed sign-in or OTP check
+  renders as an `Alert` inside the form itself (see `pages/authentication/login.tsx`), right next
+  to the field the user needs to fix, instead of a notification in the corner of the screen.
 - **MSW over a hand-rolled fake client** - MSW intercepts the real network calls Apollo Client
   makes, so the app, its tests, and a future real backend all go through the exact same Apollo
   Client → GraphQL document code path; nothing is mocked at the component level.

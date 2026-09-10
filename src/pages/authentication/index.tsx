@@ -1,10 +1,10 @@
 import { useMutation } from '@apollo/client/react';
-import { notification } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_CONST } from '../../constants/route-constant';
 import { LOGIN_MUTATION, VERIFY_OTP_MUTATION } from '../../graphql/auth.graphql';
 import { setLocalStorageItem } from '../../utils/local-storage';
+import { notify } from '../../utils/notify';
 import Login from './login';
 import OtpVerification from './otpVerification';
 
@@ -17,6 +17,8 @@ export default function Authentication() {
   const [userDetail, setUserDetail] = useState({ userName: '', password: '' });
   const [temporaryToken, setTemporaryToken] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [otpError, setOtpError] = useState<string | null>(null);
 
   const [login, { loading: isLoginLoading }] = useMutation(LOGIN_MUTATION);
   const [verifyOtp, { loading: isOtpLoading }] = useMutation(VERIFY_OTP_MUTATION);
@@ -30,18 +32,30 @@ export default function Authentication() {
   };
 
   const requestOtp = async () => {
+    // requestOtp doubles as "resend" once the OTP screen is showing, so a
+    // failure here must surface on whichever form is currently on screen.
+    const isResend = Boolean(temporaryToken);
+    if (isResend) {
+      setOtpError(null);
+    } else {
+      setLoginError(null);
+    }
+
     const { data, error } = await login({
       variables: { username: userDetail.userName, password: userDetail.password },
     }).catch((error: unknown) => ({ data: null, error: toGraphQLError(error) }));
 
     if (error || !data?.login.tempToken) {
-      notification.error({
-        title: error?.message ?? 'Unable to sign in with those credentials.',
-      });
+      const message = error?.message ?? 'Unable to sign in with those credentials.';
+      if (isResend) {
+        setOtpError(message);
+      } else {
+        setLoginError(message);
+      }
       return;
     }
     setTemporaryToken(data.login.tempToken);
-    notification.success({ title: data.login.message });
+    notify.success(data.login.message);
   };
 
   // antd's <Form onFinish> calls this with the form values, not a DOM event.
@@ -55,16 +69,17 @@ export default function Authentication() {
   };
 
   const handleOtpSubmit = async (otp: string) => {
+    setOtpError(null);
     const { data, error } = await verifyOtp({
       variables: { tempToken: temporaryToken, otp },
     }).catch((error: unknown) => ({ data: null, error: toGraphQLError(error) }));
 
     if (error || !data?.verifyOtp) {
-      notification.error({ title: error?.message ?? 'Unable to verify OTP.' });
+      setOtpError(error?.message ?? 'Unable to verify OTP.');
       return;
     }
     if (!data.verifyOtp.success || !data.verifyOtp.token || !data.verifyOtp.refreshToken) {
-      notification.error({ title: data.verifyOtp.message });
+      setOtpError(data.verifyOtp.message);
       return;
     }
     handleStorage(data.verifyOtp.token, data.verifyOtp.refreshToken);
@@ -77,6 +92,7 @@ export default function Authentication() {
           handleOtpSubmit={(otp) => void handleOtpSubmit(otp)}
           isLoading={isOtpLoading}
           resentOtp={(e) => void resentOtp(e)}
+          error={otpError}
         />
       ) : (
         <Login
@@ -86,6 +102,7 @@ export default function Authentication() {
           isLoading={isLoginLoading}
           remeberMe={rememberMe}
           setRememberMe={setRememberMe}
+          error={loginError}
         />
       )}
     </div>

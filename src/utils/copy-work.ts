@@ -1,4 +1,3 @@
-import { notification } from 'antd';
 import dayjs from 'dayjs';
 import {
   type IndividualSchedule,
@@ -7,6 +6,7 @@ import {
 } from '../types/schdeule.type';
 import { capitalizeFirstLetter } from './common-functions';
 import { calculateTaskTotalHours } from './date-time-calculation';
+import { notify } from './notify';
 
 const formattedDate = dayjs().format('DD-MM-YYYY'); // Use current date or format as needed
 
@@ -15,17 +15,11 @@ export const CopyClipboard = (formattedPlan: string) => {
   navigator.clipboard
     .writeText(formattedPlan)
     .then(() => {
-      notification.open({
-        title: 'Work Plan copied to clipboard',
-        placement: 'top',
-        style: {
-          width: 250,
-        },
-      });
+      notify.open('Work Plan copied to clipboard');
     })
     .catch((error: unknown) => {
       const message = error instanceof Error ? error.message : String(error);
-      notification.error({ title: `Failed to copy text: ${message}` });
+      notify.error(`Failed to copy text: ${message}`);
     });
 };
 

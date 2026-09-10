@@ -1,5 +1,4 @@
-import { Spin } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import { Loader2 } from 'lucide-react';
 import { type ReactNode } from 'react';
 
 interface SpinnerProps {
@@ -9,14 +8,14 @@ interface SpinnerProps {
 
 const Spinner: React.FC<SpinnerProps> = ({ children, loading }) => {
   return (
-    // <div className="flex justify-center items-center min-h-screen absolute left-0 right-0 mr-auto top-0 bottom-0 custom-spinner">
-    <Spin
-      spinning={loading}
-      indicator={<LoadingOutlined style={{ fontSize: 48, color: '#183a5e' }} spin />}
-    >
+    <div className="relative custom-spinner">
+      {loading && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60">
+          <Loader2 className="h-12 w-12 animate-spin text-[#183a5e]" />
+        </div>
+      )}
       {children}
-    </Spin>
-    // </div>
+    </div>
   );
 };
 

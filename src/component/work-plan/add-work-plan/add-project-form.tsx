@@ -2,7 +2,7 @@ import { FaPlus } from 'react-icons/fa';
 import { IoMdCloseCircleOutline } from 'react-icons/io';
 import AddScheduleForm from '../add-schedule-form';
 import { type SingleTask } from '../../../types/schdeule.type';
-import { Button } from 'antd';
+import { Button } from '../../ui/button';
 
 interface AddProjectFormProps {
   workSchedule: SingleTask[];
@@ -46,7 +46,7 @@ const AddProjectForm = ({
       })}
       <div className="flex justify-end">
         <Button
-          type="primary"
+          variant="primary"
           size="large"
           className="add-project border-primary focus:ring-0 text-primary btn-add bg-transparent enabled:hover:bg-primary "
           onClick={() => {

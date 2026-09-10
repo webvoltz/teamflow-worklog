@@ -1,9 +1,9 @@
-import { Tag } from 'antd';
 import { FaRegCopy } from 'react-icons/fa';
 import { type SingleTask } from '../../../types/schdeule.type';
 import { capitalizeFirstLetter } from '../../../utils/common-functions';
 import { CopySingleWork } from '../../../utils/copy-work';
 import { calculateTaskTotalHours } from '../../../utils/date-time-calculation';
+import { Badge } from '../../ui/badge';
 
 interface TomorrowPlanProps {
   tomorrowIndex: number;
@@ -20,7 +20,8 @@ export function TomorrowPlan({
       {isOnlyPlan && (
         <h3 className="text-sm font-bold flex items-center">
           Tomorrow’s Plan | {capitalizeFirstLetter(taskDetailData.projectName ?? '')} (
-          {calculateTaskTotalHours(taskDetailData.taskDetail)}h) &nbsp; <Tag color="blue">NEW</Tag>
+          {calculateTaskTotalHours(taskDetailData.taskDetail)}h) &nbsp;{' '}
+          <Badge color="blue">NEW</Badge>
           <button
             onClick={() => {
               CopySingleWork('Tomorrow plan', taskDetailData);
