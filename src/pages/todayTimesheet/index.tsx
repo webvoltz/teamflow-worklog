@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import morningSchedule from '../../assets/images/morning_schedule.png';
 import nightSchedule from '../../assets/images/night_schedule.png';
@@ -12,9 +12,6 @@ import { type AppDispatch, type RootState } from '../../store';
 import { compareDate } from '../../utils/date-time-calculation';
 
 const TodayTimesheet = () => {
-  const [isWorkScheduleExist, setIsWorkScheduleExist] = useState(false);
-  const [isWorkUpdateExist, setIsWorkUpdateExist] = useState(false);
-
   const dispatch = useDispatch<AppDispatch>();
   const {
     data: employeeWorkPlan,
@@ -32,10 +29,11 @@ const TodayTimesheet = () => {
     }
   }, [userData, dispatch]);
 
-  useEffect(() => {
-    setIsWorkScheduleExist(compareDate(employeeWorkPlan.schedule));
-    setIsWorkUpdateExist(compareDate(employeeWorkPlan.update));
-  }, [employeeWorkPlan]);
+  const isWorkScheduleExist = useMemo(
+    () => compareDate(employeeWorkPlan.schedule),
+    [employeeWorkPlan],
+  );
+  const isWorkUpdateExist = useMemo(() => compareDate(employeeWorkPlan.update), [employeeWorkPlan]);
 
   if (error) {
     return <div>Error: {error}</div>;
