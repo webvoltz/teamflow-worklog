@@ -1,0 +1,20 @@
+diff --git a/node_modules/@reduxjs/toolkit/dist/index.d.mts b/node_modules/@reduxjs/toolkit/dist/index.d.mts
+index 76ec70f..378a78e 100644
+--- a/node_modules/@reduxjs/toolkit/dist/index.d.mts
++++ b/node_modules/@reduxjs/toolkit/dist/index.d.mts
+@@ -1,3 +1,6 @@
++// @ts-nocheck -- see patches/@reduxjs+toolkit+2.12.0.patch: silences this file's
++// own internal self-check only (reduxjs/redux-toolkit#4664, unresolved upstream);
++// the exported declarations below are unmodified, so consumers still get full checking.
+ import { ActionCreator, Action, Middleware, StoreEnhancer, UnknownAction, Reducer, ReducersMapObject, Store, Dispatch, StateFromReducersMapObject, PreloadedStateShapeFromReducersMapObject, MiddlewareAPI } from 'redux';
+ export * from 'redux';
+ import { Draft } from 'immer';
+@@ -794,7 +797,7 @@ interface SerializedError {
+     name?: string;
+     message?: string;
+     stack?: string;
+-    code?: string;
++    code?: string | undefined;
+ }
+ declare class RejectWithValue<Payload, RejectedMeta> {
+     readonly payload: Payload;

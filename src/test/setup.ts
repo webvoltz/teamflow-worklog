@@ -16,6 +16,14 @@ window.matchMedia = (query: string) => ({
   dispatchEvent: () => false,
 });
 
+// jsdom does not implement ResizeObserver; antd's layout-measuring components need it.
+class ResizeObserverStub {
+  observe = (): void => {};
+  unobserve = (): void => {};
+  disconnect = (): void => {};
+}
+window.ResizeObserver = ResizeObserverStub;
+
 beforeAll(() => {
   server.listen({ onUnhandledRequest: 'error' });
 });

@@ -8,13 +8,13 @@ export const vaildateSchedule = (workSchedule: SingleTask[], isShowMessage?: boo
   }
   if (changeField.projectName === '') {
     if (!isShowMessage) {
-      notification.error({ message: 'Project Name should not be empty' });
+      notification.error({ title: 'Project Name should not be empty' });
     }
     return false;
   }
   if (!validateTaskDetail(changeField.taskDetail)) {
     if (!isShowMessage) {
-      notification.error({ message: 'Task description and task type should not be empty' });
+      notification.error({ title: 'Task description and task type should not be empty' });
     }
     return false;
   }

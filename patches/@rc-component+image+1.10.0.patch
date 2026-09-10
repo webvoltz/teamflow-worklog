@@ -1,0 +1,13 @@
+diff --git a/node_modules/@rc-component/image/es/PreviewGroup.d.ts b/node_modules/@rc-component/image/es/PreviewGroup.d.ts
+index 567699a..edfd3fd 100644
+--- a/node_modules/@rc-component/image/es/PreviewGroup.d.ts
++++ b/node_modules/@rc-component/image/es/PreviewGroup.d.ts
+@@ -7,7 +7,7 @@ export interface GroupPreviewConfig extends InternalPreviewConfig {
+     current?: number;
+     imageRender?: (originalNode: React.ReactElement, info: {
+         transform: TransformType;
+-        current: number;
++        current?: number;
+         image: ImgInfo;
+     }) => React.ReactNode;
+     onOpenChange?: (value: boolean, info: {

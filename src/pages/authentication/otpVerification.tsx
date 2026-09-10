@@ -84,7 +84,9 @@ const OtpVerification: React.FC<OtpVerificationProps> = ({
               <Input
                 key={index}
                 type="text"
-                ref={(input) => (inputRefs.current[index] = input)}
+                ref={(input) => {
+                  inputRefs.current[index] = input;
+                }}
                 value={value}
                 onChange={(e) => {
                   handleChange(index, e);

@@ -66,12 +66,12 @@ export default function Authentication() {
 
     if ((errors && errors.length > 0) || !data?.login.tempToken) {
       notification.error({
-        message: errors?.[0]?.message ?? 'Unable to sign in with those credentials.',
+        title: errors?.[0]?.message ?? 'Unable to sign in with those credentials.',
       });
       return;
     }
     setTemporaryToken(data.login.tempToken);
-    notification.success({ message: data.login.message });
+    notification.success({ title: data.login.message });
   };
 
   // antd's <Form onFinish> calls this with the form values, not a DOM event.
@@ -90,11 +90,11 @@ export default function Authentication() {
     }).catch((error: unknown) => ({ data: null, errors: [toGraphQLError(error)] }));
 
     if ((errors && errors.length > 0) || !data?.verifyOtp) {
-      notification.error({ message: errors?.[0]?.message ?? 'Unable to verify OTP.' });
+      notification.error({ title: errors?.[0]?.message ?? 'Unable to verify OTP.' });
       return;
     }
     if (!data.verifyOtp.success || !data.verifyOtp.token || !data.verifyOtp.refreshToken) {
-      notification.error({ message: data.verifyOtp.message });
+      notification.error({ title: data.verifyOtp.message });
       return;
     }
     handleStorage(data.verifyOtp.token, data.verifyOtp.refreshToken);

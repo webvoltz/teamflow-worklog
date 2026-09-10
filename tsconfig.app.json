@@ -6,12 +6,7 @@
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    // Deviation from the Webvoltz standard (which requires false): with
-    // exactOptionalPropertyTypes on, antd/rc-picker/rc-cascader/redux-toolkit/
-    // vite/vitest's own bundled .d.ts files fail to type-check under this repo's
-    // TS version - none of that is code we can fix. Documented exception per the
-    // standard's own policy (see Webvoltz-Engineering-Standards/README.md).
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
