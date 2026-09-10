@@ -91,22 +91,6 @@ button.cancel-btn:not(:disabled):hover {
   text-align: center;
 }
 
-.work-accordian {
-  width: calc(100% - 80px);
-  margin-bottom: 24px;
-}
-
-.add-project {
-  margin-right: 80px;
-  border-bottom: 1px solid #d0d5dd;
-  margin-bottom: 20px;
-}
-
-.close-icon {
-  right: -35px;
-  top: 10px;
-}
-
 .timesheet-card h2,
 .timesheet-card ul li {
   color: #101828;
@@ -148,9 +132,13 @@ button.cancel-btn:not(:disabled):hover {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .container {
     max-width: 95% !important;
+  }
+
+  .avtar-profile {
+    display: none;
   }
 
   .main-menu {
@@ -216,20 +204,6 @@ button.cancel-btn:not(:disabled):hover {
   }
 }
 
-@media (max-width: 736px) {
-  .hamburger {
-    display: block;
-    cursor: pointer;
-  }
-
-  .work-accordian {
-    width: calc(100% - 60px);
-  }
-
-  .add-project {
-    margin-right: 60px;
-  }
-}
 @media (max-width: 475px) {
   .accordian-head {
     align-items: flex-start !important;
@@ -240,8 +214,5 @@ button.cancel-btn:not(:disabled):hover {
   .accordian-head h2 {
     align-items: flex-start;
     flex-direction: column;
-  }
-  .avtar-profile {
-    display: none;
   }
 }

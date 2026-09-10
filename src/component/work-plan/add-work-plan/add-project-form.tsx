@@ -25,22 +25,24 @@ const AddProjectForm = ({
     <>
       {workSchedule.map((projectDetail, projectIndex) => {
         return (
-          <div key={projectDetail.projectId} className="work-accordian relative ">
+          <div key={projectDetail.projectId} className="mb-6 flex items-start gap-2">
+            <div className="min-w-0 flex-1">
+              <AddScheduleForm
+                workSchedule={workSchedule}
+                setWorkSchedule={setWorkSchedule}
+                projectDetail={projectDetail}
+                projectIndex={projectIndex}
+                showBillingType={showBillingType}
+              />
+            </div>
             {workSchedule.length > 1 && (
               <IoMdCloseCircleOutline
-                className="ml-2 h-7 w-7 absolute close-icon cursor-pointer"
+                className="mt-1 h-7 w-7 shrink-0 cursor-pointer text-muted-foreground hover:text-destructive"
                 onClick={() => {
                   handleRemoveProject(projectIndex, isTomorrow);
                 }}
               />
             )}
-            <AddScheduleForm
-              workSchedule={workSchedule}
-              setWorkSchedule={setWorkSchedule}
-              projectDetail={projectDetail}
-              projectIndex={projectIndex}
-              showBillingType={showBillingType}
-            />
           </div>
         );
       })}
@@ -48,7 +50,7 @@ const AddProjectForm = ({
         <Button
           variant="primary"
           size="large"
-          className="add-project border-primary focus:ring-0 text-primary btn-add bg-transparent enabled:hover:bg-primary "
+          className="border-primary focus:ring-0 text-primary btn-add bg-transparent enabled:hover:bg-primary "
           onClick={() => {
             handleAddProject(isTomorrow);
           }}

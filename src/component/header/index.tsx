@@ -22,7 +22,7 @@ const Header = () => {
   const [menuVisible, setMenuVisible] = useState(false);
 
   const linkClasses =
-    'text-black text-base font-medium rounded-lg px-3 py-1.5 transition-colors md:hover:bg-muted aria-[current=page]:bg-primary/10 aria-[current=page]:text-primary aria-[current=page]:font-semibold';
+    'text-black text-base font-medium rounded-lg px-3 py-1.5 transition-colors lg:hover:bg-muted aria-[current=page]:bg-primary/10 aria-[current=page]:text-primary aria-[current=page]:font-semibold';
   const handleSignOut = () => {
     clearLocalStorage();
     // Full reload (rather than a client-side navigate) so the redux store and Apollo
@@ -53,18 +53,31 @@ const Header = () => {
               }`}
             >
               <div
-                className={`mt-4 flex flex-col md:mt-0 md:flex-row md:space-x-8 md:text-sm md:font-medium`}
+                className={`mt-4 flex flex-col lg:mt-0 lg:flex-row lg:space-x-8 lg:text-sm lg:font-medium`}
               >
                 <ul className="main-menu flex">
                   <li>
-                    <NavLink end className={linkClasses} to={ROUTE_CONST.INITIAL_ROUTE}>
+                    <NavLink
+                      end
+                      className={linkClasses}
+                      to={ROUTE_CONST.INITIAL_ROUTE}
+                      onClick={() => {
+                        setMenuVisible(false);
+                      }}
+                    >
                       {' '}
                       Today’s Timesheet
                     </NavLink>
                   </li>
                   {isTeamLeader && (
                     <li>
-                      <NavLink className={linkClasses} to={ROUTE_CONST.APPROVALS}>
+                      <NavLink
+                        className={linkClasses}
+                        to={ROUTE_CONST.APPROVALS}
+                        onClick={() => {
+                          setMenuVisible(false);
+                        }}
+                      >
                         {' '}
                         Approvals
                       </NavLink>
@@ -73,7 +86,7 @@ const Header = () => {
                 </ul>
               </div>
             </div>
-            <div className="flex md:order-2 gap-4 ">
+            <div className="flex lg:order-2 gap-4 ">
               <div className="space-y-1 text-sm dark:text-white avtar-profile">
                 <div className="text-[#101828] font-semibold ">
                   {capitalizeFirstLetter(data?.viewer.name ?? 'team member')}

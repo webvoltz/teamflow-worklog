@@ -241,7 +241,7 @@ const AddScheduleForm = ({
                     handleTaskDetailChange(e, taskDetailIndex);
                   }}
                 />
-                <div className="flex items-center justify-end gap-1">
+                <div className="flex items-center justify-center gap-1 md:justify-end">
                   {taskDetail.length === 1 || taskDetail.length - 1 === taskDetailIndex ? (
                     <>
                       <HiOutlinePlusCircle
