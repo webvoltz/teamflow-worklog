@@ -78,7 +78,7 @@ const WorkPlan = ({
 
   return (
     <div className="mx-auto my-5">
-      <Collapse items={items} expandIconPosition="end" defaultActiveKey={[1]} />
+      <Collapse items={items} expandIconPlacement="end" defaultActiveKey={[1]} />
     </div>
   );
 };

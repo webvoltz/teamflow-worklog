@@ -16,7 +16,7 @@ export const CopyClipboard = (formattedPlan: string) => {
     .writeText(formattedPlan)
     .then(() => {
       notification.open({
-        message: 'Work Plan copied to clipboard',
+        title: 'Work Plan copied to clipboard',
         placement: 'top',
         style: {
           width: 250,
@@ -25,7 +25,7 @@ export const CopyClipboard = (formattedPlan: string) => {
     })
     .catch((error: unknown) => {
       const message = error instanceof Error ? error.message : String(error);
-      notification.error({ message: `Failed to copy text: ${message}` });
+      notification.error({ title: `Failed to copy text: ${message}` });
     });
 };
 

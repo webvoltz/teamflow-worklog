@@ -106,7 +106,7 @@ const AddSchedule = ({
         operationType: operationName,
       },
     }).catch((error: unknown) => {
-      notification.error({ message: error instanceof Error ? error.message : 'An error occurred' });
+      notification.error({ title: error instanceof Error ? error.message : 'An error occurred' });
       return null;
     });
     if (!result?.data?.createMyTaskEntry.success) {
@@ -121,7 +121,7 @@ const AddSchedule = ({
         },
       }).catch((error: unknown) => {
         notification.error({
-          message: error instanceof Error ? error.message : 'An error occurred',
+          title: error instanceof Error ? error.message : 'An error occurred',
         });
       });
     }

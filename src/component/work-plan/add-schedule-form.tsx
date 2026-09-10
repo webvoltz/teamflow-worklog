@@ -121,7 +121,7 @@ const AddScheduleForm = ({
     const current = changeDetail[projectIndex];
     if (!current) return;
     if (!validateTaskDetail(current.taskDetail)) {
-      notification.error({ message: 'Task description and task type should not be empty' });
+      notification.error({ title: 'Task description and task type should not be empty' });
       return;
     }
     const updatedTaskDetail = [...current.taskDetail, { description: '', taskType: '', hours: 0 }];
@@ -301,7 +301,7 @@ const AddScheduleForm = ({
     }
   }, [projectOptionData]);
 
-  return <Collapse items={items} expandIconPosition="end" defaultActiveKey={[1]} />;
+  return <Collapse items={items} expandIconPlacement="end" defaultActiveKey={[1]} />;
 };
 
 export default AddScheduleForm;
