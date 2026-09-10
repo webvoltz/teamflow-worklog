@@ -1,7 +1,13 @@
 /* src/index.css or src/main.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+  --color-regal-gray: rgba(107, 114, 128, 1);
+  --color-text-color: rgba(17, 25, 40, 1);
+  --color-primary: #3d75ff;
+  --color-lightgray: #101828;
+  --font-inter: Inter, sans-serif;
+}
 
 @layer base {
   @font-face {
