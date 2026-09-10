@@ -4,14 +4,6 @@ import { APOLLO_CLIENT } from '../../services/apollo';
 import { type QueryError } from '../../types/error.type';
 import { type TeamWorkPlanEntry, type WorkPlanStatus } from '../../types/schdeule.type';
 
-interface ReviewWorkPlanResult {
-  reviewWorkPlan: {
-    success: boolean;
-    message: string;
-    status: WorkPlanStatus;
-  };
-}
-
 const toErrorMessage = (error: unknown): string => {
   if (error instanceof Error) return error.message;
   if (typeof error === 'string') return error;
@@ -24,11 +16,14 @@ export const fetchTeamWorkPlans = createAsyncThunk<
   { rejectValue: QueryError }
 >('query/fetchTeamWorkPlans', async ({ teamLeaderId }, { rejectWithValue }) => {
   try {
-    const { data } = await APOLLO_CLIENT.query<{ teamWorkPlans: TeamWorkPlanEntry[] }>({
+    const { data } = await APOLLO_CLIENT.query({
       query: GET_TEAM_WORK_PLANS,
       variables: { teamLeaderId },
       fetchPolicy: 'network-only',
     });
+    if (!data) {
+      return rejectWithValue({ message: 'No data returned from the server.' });
+    }
     return data.teamWorkPlans;
   } catch (error: unknown) {
     return rejectWithValue({ message: toErrorMessage(error) });
@@ -41,7 +36,7 @@ export const reviewWorkPlan = createAsyncThunk<
   { rejectValue: QueryError }
 >('mutation/reviewWorkPlan', async ({ entryId, status, note }, { rejectWithValue }) => {
   try {
-    const { data } = await APOLLO_CLIENT.mutate<ReviewWorkPlanResult>({
+    const { data } = await APOLLO_CLIENT.mutate({
       mutation: REVIEW_WORK_PLAN,
       variables: { entryId, status, note },
     });

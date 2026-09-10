@@ -4,19 +4,16 @@ import { TASK_TYPE } from '../../graphql/schedule.graphql';
 import { type TaskTypeResponse } from '../../types/schdeule.type';
 import { type QueryError } from '../../types/error.type';
 
-interface TaskTypeQueryResult {
-  taskTypes: {
-    nodes: TaskTypeResponse[];
-  };
-}
-
 export const fetchTaskType = createAsyncThunk<
   TaskTypeResponse[],
   undefined,
   { rejectValue: QueryError }
 >('query/fetchTaskType', async (_, { rejectWithValue }) => {
   try {
-    const response = await APOLLO_CLIENT.query<TaskTypeQueryResult>({ query: TASK_TYPE });
+    const response = await APOLLO_CLIENT.query({ query: TASK_TYPE });
+    if (!response.data) {
+      return rejectWithValue({ message: 'No data returned from the server.' });
+    }
     return response.data.taskTypes.nodes;
   } catch (error: unknown) {
     let errorMessage = 'An unknown error occurred';

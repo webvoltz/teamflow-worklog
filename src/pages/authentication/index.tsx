@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { notification } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -7,32 +7,6 @@ import { LOGIN_MUTATION, VERIFY_OTP_MUTATION } from '../../graphql/auth.graphql'
 import { setLocalStorageItem } from '../../utils/local-storage';
 import Login from './login';
 import OtpVerification from './otpVerification';
-
-interface LoginResult {
-  login: {
-    tempToken: string;
-    message: string;
-  };
-}
-
-interface LoginVariables {
-  username: string;
-  password: string;
-}
-
-interface VerifyOtpResult {
-  verifyOtp: {
-    success: boolean;
-    token: string | null;
-    refreshToken: string | null;
-    message: string;
-  };
-}
-
-interface VerifyOtpVariables {
-  tempToken: string;
-  otp: string;
-}
 
 const toGraphQLError = (error: unknown): { message: string } => ({
   message: error instanceof Error ? error.message : 'An unknown error occurred',
@@ -44,12 +18,8 @@ export default function Authentication() {
   const [temporaryToken, setTemporaryToken] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
-  const [login, { loading: isLoginLoading }] = useMutation<LoginResult, LoginVariables>(
-    LOGIN_MUTATION,
-  );
-  const [verifyOtp, { loading: isOtpLoading }] = useMutation<VerifyOtpResult, VerifyOtpVariables>(
-    VERIFY_OTP_MUTATION,
-  );
+  const [login, { loading: isLoginLoading }] = useMutation(LOGIN_MUTATION);
+  const [verifyOtp, { loading: isOtpLoading }] = useMutation(VERIFY_OTP_MUTATION);
 
   const handleStorage = (token: string, refreshToken: string) => {
     setLocalStorageItem('token', token);
@@ -60,13 +30,13 @@ export default function Authentication() {
   };
 
   const requestOtp = async () => {
-    const { data, errors } = await login({
+    const { data, error } = await login({
       variables: { username: userDetail.userName, password: userDetail.password },
-    }).catch((error: unknown) => ({ data: null, errors: [toGraphQLError(error)] }));
+    }).catch((error: unknown) => ({ data: null, error: toGraphQLError(error) }));
 
-    if ((errors && errors.length > 0) || !data?.login.tempToken) {
+    if (error || !data?.login.tempToken) {
       notification.error({
-        title: errors?.[0]?.message ?? 'Unable to sign in with those credentials.',
+        title: error?.message ?? 'Unable to sign in with those credentials.',
       });
       return;
     }
@@ -85,12 +55,12 @@ export default function Authentication() {
   };
 
   const handleOtpSubmit = async (otp: string) => {
-    const { data, errors } = await verifyOtp({
+    const { data, error } = await verifyOtp({
       variables: { tempToken: temporaryToken, otp },
-    }).catch((error: unknown) => ({ data: null, errors: [toGraphQLError(error)] }));
+    }).catch((error: unknown) => ({ data: null, error: toGraphQLError(error) }));
 
-    if ((errors && errors.length > 0) || !data?.verifyOtp) {
-      notification.error({ title: errors?.[0]?.message ?? 'Unable to verify OTP.' });
+    if (error || !data?.verifyOtp) {
+      notification.error({ title: error?.message ?? 'Unable to verify OTP.' });
       return;
     }
     if (!data.verifyOtp.success || !data.verifyOtp.token || !data.verifyOtp.refreshToken) {

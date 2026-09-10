@@ -29,10 +29,13 @@ export const fetchEmployeeWorkPlan = createAsyncThunk<
 >('query/fetchEmployeeWorkPlan', async ({ userId }, { rejectWithValue }) => {
   try {
     const query = getEmployeeWorkPlan(userId);
-    const response = await APOLLO_CLIENT.query<IndividualSchedule>({
+    const response = await APOLLO_CLIENT.query({
       query,
       fetchPolicy: 'network-only',
     });
+    if (!response.data) {
+      return rejectWithValue({ message: 'No data returned from the server.' });
+    }
     return response.data;
   } catch (error: unknown) {
     let errorMessage = 'An unknown error occurred';

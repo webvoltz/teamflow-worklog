@@ -1,4 +1,4 @@
-import { ApolloProvider } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
 import './App.css';
 import RouteList from './route/routelist';
 import { APOLLO_CLIENT } from './services/apollo';

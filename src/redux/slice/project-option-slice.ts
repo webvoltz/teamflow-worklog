@@ -13,16 +13,22 @@ export const fetchProjectOption = createAsyncThunk<
     let response: ProjectResponse[] = [];
 
     if (isTeamLeader) {
-      const { data } = await APOLLO_CLIENT.query<{ allmemberProject: ProjectResponse[] }>({
+      const { data } = await APOLLO_CLIENT.query({
         query: TL_PROJECT_QUERY,
         variables: { teamLeaderId: userId },
       });
+      if (!data) {
+        return rejectWithValue({ message: 'No data returned from the server.' });
+      }
       response = data.allmemberProject;
     } else {
-      const { data } = await APOLLO_CLIENT.query<{ filteredProjects: ProjectResponse[] }>({
+      const { data } = await APOLLO_CLIENT.query({
         query: PROJECT_QUERY,
         variables: { usersId: userId },
       });
+      if (!data) {
+        return rejectWithValue({ message: 'No data returned from the server.' });
+      }
       response = data.filteredProjects;
     }
 

@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { Button, notification } from 'antd';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
@@ -23,19 +23,6 @@ interface AddScheduleProps {
   isCopyScheduleData: boolean;
 }
 
-interface SubmitScheduleResult {
-  createMyTaskEntry: {
-    success: boolean;
-    message: string;
-  };
-}
-
-interface SubmitScheduleVariables {
-  userId: string | undefined;
-  schedule: SingleTask[];
-  operationType: string;
-}
-
 const AddSchedule = ({
   setAddWorkSchedule,
   setTotalHours,
@@ -45,10 +32,7 @@ const AddSchedule = ({
   const { data: employeeWorkPlan } = useSelector((state: RootState) => state.employeeWorkPlan);
   const { data: userData } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
-  const [submitScheduleMutation, { loading: isSubmitLoading }] = useMutation<
-    SubmitScheduleResult,
-    SubmitScheduleVariables
-  >(SUBMIT_SCHEDULE);
+  const [submitScheduleMutation, { loading: isSubmitLoading }] = useMutation(SUBMIT_SCHEDULE);
   const singleTask: SingleTask = useMemo(
     () => ({
       projectName: '',

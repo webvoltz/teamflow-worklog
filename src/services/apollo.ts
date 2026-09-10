@@ -1,5 +1,5 @@
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { SetContextLink } from '@apollo/client/link/context';
 import { env } from '../config/env';
 import { getLocalStorageItem } from '../utils/local-storage';
 
@@ -19,16 +19,18 @@ const fetchWithoutAbortSignal: typeof fetch = (input, init) => {
 // Defaults to "/graphql", which is served locally by the MSW mock layer (see src/mocks).
 // Point VITE_GRAPHQL_API_URL at a real backend to go live.
 export const createApolloClient = () => {
-  const httpLink = createHttpLink({
+  const httpLink = new HttpLink({
     uri: env.graphqlApiUrl,
     fetch: fetchWithoutAbortSignal,
   });
 
-  const authLink = setContext((_, previousContext: { headers?: Record<string, string> }) => {
+  // authLink is the first link in the chain (see authLink.concat(httpLink) below), so
+  // there is no previous context to merge headers from - no call site in this app sets
+  // a per-request context either.
+  const authLink = new SetContextLink(() => {
     const token = getLocalStorageItem('token');
     return {
       headers: {
-        ...previousContext.headers,
         authorization: token ? `Bearer ${token}` : '',
       },
     };
