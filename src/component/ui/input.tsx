@@ -1,11 +1,12 @@
+import { Eye, EyeOff } from 'lucide-react';
 import {
+  forwardRef,
   type InputHTMLAttributes,
   type ReactNode,
   type TextareaHTMLAttributes,
-  forwardRef,
   useState,
 } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+
 import { cn } from '../../utils/cn';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {

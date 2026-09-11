@@ -1,7 +1,8 @@
-import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import TeamApprovals from '../../component/team-approvals';
+import { Navigate } from 'react-router-dom';
+
 import Spinner from '../../component/loader';
+import TeamApprovals from '../../component/team-approvals';
 import { ROUTE_CONST } from '../../constants/route-constant';
 import { type RootState } from '../../store';
 

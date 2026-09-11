@@ -1,7 +1,8 @@
-import { HiMail, HiOutlineArrowRight } from 'react-icons/hi';
-import logo from '../../assets/images/brand-mark.png';
-import { type ChangeEvent } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { type ChangeEvent } from 'react';
+import { HiMail, HiOutlineArrowRight } from 'react-icons/hi';
+
+import logo from '../../assets/images/brand-mark.png';
 import { Alert } from '../../component/ui/alert';
 import { Button } from '../../component/ui/button';
 import { Card } from '../../component/ui/card';

@@ -1,4 +1,5 @@
 import { gql, type TypedDocumentNode } from '@apollo/client';
+
 import { type TeamWorkPlanEntry, type WorkPlanStatus } from '../types/schdeule.type';
 
 export interface GetTeamWorkPlansResult {

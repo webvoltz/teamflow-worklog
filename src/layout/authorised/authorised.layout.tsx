@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, Outlet } from 'react-router-dom';
+
 import Header from '../../component/header';
 import { ROUTE_CONST } from '../../constants/route-constant';
 import { fetchUserData } from '../../redux/slice/user-slices';

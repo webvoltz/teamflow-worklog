@@ -1,11 +1,12 @@
 import dayjs from 'dayjs';
 import { Briefcase, CalendarCheck2, Clock3 } from 'lucide-react';
+
+import { type IndividualSchedule, type WorkPlanStatus } from '../../types/schdeule.type';
+import { getHoursProgressInfo } from '../../utils/common-functions';
+import { calculateProjectTotalHours } from '../../utils/date-time-calculation';
 import { Badge, type BadgeProps } from '../ui/badge';
 import { Progress } from '../ui/progress';
 import { StatCard } from '../ui/stat-card';
-import { type IndividualSchedule, type WorkPlanStatus } from '../../types/schdeule.type';
-import { calculateProjectTotalHours } from '../../utils/date-time-calculation';
-import { getHoursProgressInfo } from '../../utils/common-functions';
 
 const STATUS_COLOR: Record<WorkPlanStatus, NonNullable<BadgeProps['color']>> = {
   pending: 'gold',

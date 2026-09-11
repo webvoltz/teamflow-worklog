@@ -1,6 +1,7 @@
-import { type MouseEventHandler } from 'react';
 import { Select as BaseSelect } from '@base-ui/react/select';
 import { Check, ChevronDown } from 'lucide-react';
+import { type MouseEventHandler } from 'react';
+
 import { cn } from '../../utils/cn';
 
 export interface SelectOption {

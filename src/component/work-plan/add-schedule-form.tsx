@@ -2,12 +2,13 @@ import { type ChangeEvent, useMemo } from 'react';
 import { HiOutlinePlusCircle } from 'react-icons/hi';
 import { IoMdCloseCircleOutline } from 'react-icons/io';
 import { useSelector } from 'react-redux';
+
 import { type RootState } from '../../store';
 import { type OptionArray } from '../../types/common.type';
 import { type SingleTask } from '../../types/schdeule.type';
+import { cn } from '../../utils/cn';
 import { validateTaskDetail } from '../../utils/common-functions';
 import { calculateTaskTotalHours } from '../../utils/date-time-calculation';
-import { cn } from '../../utils/cn';
 import { notify } from '../../utils/notify';
 import { Accordion } from '../ui/accordion';
 import { Input, Textarea } from '../ui/input';
