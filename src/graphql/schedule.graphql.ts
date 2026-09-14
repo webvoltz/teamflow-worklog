@@ -1,4 +1,5 @@
 import { gql, type TypedDocumentNode } from '@apollo/client';
+
 import {
   type IndividualSchedule,
   type ProjectResponse,

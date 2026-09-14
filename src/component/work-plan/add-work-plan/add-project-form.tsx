@@ -1,8 +1,9 @@
 import { FaPlus } from 'react-icons/fa';
 import { IoMdCloseCircleOutline } from 'react-icons/io';
-import AddScheduleForm from '../add-schedule-form';
+
 import { type SingleTask } from '../../../types/schdeule.type';
 import { Button } from '../../ui/button';
+import AddScheduleForm from '../add-schedule-form';
 
 interface AddProjectFormProps {
   workSchedule: SingleTask[];

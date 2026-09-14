@@ -4,9 +4,10 @@ import { render, type RenderOptions } from '@testing-library/react';
 import { type ReactElement, type ReactNode } from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
+
+import { Toaster } from '../component/ui/toast';
 import rootReducer from '../redux';
 import { createApolloClient } from '../services/apollo';
-import { Toaster } from '../component/ui/toast';
 
 export const createTestStore = () => configureStore({ reducer: rootReducer });
 

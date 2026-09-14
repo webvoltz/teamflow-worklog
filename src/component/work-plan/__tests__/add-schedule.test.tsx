@@ -1,8 +1,9 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
-import { fetchUserData } from '../../../redux/slice/user-slices';
+
 import TodayTimesheet from '../../../pages/todayTimesheet';
+import { fetchUserData } from '../../../redux/slice/user-slices';
 import { createTestStore, renderWithProviders } from '../../../test/render';
 
 describe('Add work plan', () => {

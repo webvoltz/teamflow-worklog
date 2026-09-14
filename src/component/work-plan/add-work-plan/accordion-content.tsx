@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { FaRegCopy } from 'react-icons/fa';
 import { HiPlus } from 'react-icons/hi';
+
 import { type OperationName } from '../../../types/schdeule.type';
-import AddSchedule from './add-schedule';
-import ViewSchedule from '../view-work-plan';
 import { Button } from '../../ui/button';
+import ViewSchedule from '../view-work-plan';
+import AddSchedule from './add-schedule';
 
 interface AccordionContentProps {
   addWorkSchedule: boolean;

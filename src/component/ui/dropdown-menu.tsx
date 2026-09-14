@@ -1,5 +1,6 @@
-import { type ReactNode } from 'react';
 import { Menu } from '@base-ui/react/menu';
+import { type ReactNode } from 'react';
+
 import { cn } from '../../utils/cn';
 
 export const DropdownMenu = Menu.Root;

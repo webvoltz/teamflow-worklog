@@ -1,6 +1,7 @@
-import { type ReactNode } from 'react';
 import { Dialog as BaseDialog } from '@base-ui/react/dialog';
 import { X } from 'lucide-react';
+import { type ReactNode } from 'react';
+
 import { Button } from './button';
 
 export interface DialogProps {

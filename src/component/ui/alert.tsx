@@ -1,6 +1,7 @@
-import { type HTMLAttributes } from 'react';
-import { AlertCircle, CheckCircle2, Info } from 'lucide-react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { AlertCircle, CheckCircle2, Info } from 'lucide-react';
+import { type HTMLAttributes } from 'react';
+
 import { cn } from '../../utils/cn';
 
 const alertVariants = cva('flex items-start gap-2 rounded-lg border px-3 py-2.5 text-sm', {

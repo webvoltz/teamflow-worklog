@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { APOLLO_CLIENT } from '../../services/apollo';
+
 import { TASK_TYPE } from '../../graphql/schedule.graphql';
-import { type TaskTypeResponse } from '../../types/schdeule.type';
+import { APOLLO_CLIENT } from '../../services/apollo';
 import { type QueryError } from '../../types/error.type';
+import { type TaskTypeResponse } from '../../types/schdeule.type';
 
 export const fetchTaskType = createAsyncThunk<
   TaskTypeResponse[],

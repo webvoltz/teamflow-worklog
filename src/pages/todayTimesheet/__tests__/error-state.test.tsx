@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
 import { graphql, HttpResponse } from 'msw';
 import { afterEach, describe, expect, it } from 'vitest';
+
 import { server } from '../../../mocks/server';
 import { fetchUserData } from '../../../redux/slice/user-slices';
 import { createTestStore, renderWithProviders } from '../../../test/render';

@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
+
 import { CloseIcon, Hamburger } from '../../assets/svg-images';
+import { ROUTE_CONST } from '../../constants/route-constant';
+import { type RootState } from '../../store';
+import { capitalizeFirstLetter } from '../../utils/common-functions';
+import { clearLocalStorage } from '../../utils/local-storage';
 import BrandLogo from '../brand-logo';
 import { Avatar } from '../ui/avatar';
 import {
@@ -12,10 +17,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { ROUTE_CONST } from '../../constants/route-constant';
-import { type RootState } from '../../store';
-import { capitalizeFirstLetter } from '../../utils/common-functions';
-import { clearLocalStorage } from '../../utils/local-storage';
 
 const Header = () => {
   const { data } = useSelector((state: RootState) => state.user);

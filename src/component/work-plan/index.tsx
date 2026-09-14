@@ -1,11 +1,12 @@
 import { type ReactNode, useState } from 'react';
 import { FaRegCopy } from 'react-icons/fa';
+
 import { type IndividualSchedule, type OperationName } from '../../types/schdeule.type';
-import { CopyAllWork } from '../../utils/copy-work';
-import AccordionContent from './add-work-plan/accordion-content';
 import { getHoursProgressInfo } from '../../utils/common-functions';
+import { CopyAllWork } from '../../utils/copy-work';
 import { Accordion } from '../ui/accordion';
 import { Progress } from '../ui/progress';
+import AccordionContent from './add-work-plan/accordion-content';
 
 interface WorkPlanProps {
   scheduleTitle: string;

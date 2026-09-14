@@ -1,4 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
+
 import { ROUTE_CONST } from '../constants/route-constant';
 
 const UnAuthorisedLayout = () => {

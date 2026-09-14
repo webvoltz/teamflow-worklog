@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
 import { PROJECT_QUERY, TL_PROJECT_QUERY } from '../../graphql/schedule.graphql';
 import { APOLLO_CLIENT } from '../../services/apollo';
 import { type QueryError } from '../../types/error.type';

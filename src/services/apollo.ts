@@ -1,5 +1,6 @@
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { SetContextLink } from '@apollo/client/link/context';
+
 import { env } from '../config/env';
 import { getLocalStorageItem } from '../utils/local-storage';
 

@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
 import { GET_USER } from '../../graphql/user.graphql';
 import { APOLLO_CLIENT } from '../../services/apollo';
-import { type UserData } from '../../types/user.type';
 import { type QueryError } from '../../types/error.type';
+import { type UserData } from '../../types/user.type';
 
 export const fetchUserData = createAsyncThunk<UserData, undefined, { rejectValue: QueryError }>(
   'query/fetchUserData',
