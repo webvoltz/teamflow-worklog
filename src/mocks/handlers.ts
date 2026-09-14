@@ -12,6 +12,7 @@ import {
   SAMPLE_PROJECTS,
   SAMPLE_TASK_TYPES,
   SAMPLE_TEAM_PROJECTS,
+  setWorkPlanSlice,
 } from './data';
 
 const api = graphql.link(env.graphqlApiUrl);
@@ -125,12 +126,11 @@ export const handlers = [
 
   api.mutation('CreateTaskEntry', ({ variables }) => {
     const { userId, schedule, operationType } = createTaskEntryVariablesSchema.parse(variables);
-    const entry = getWorkPlanEntry(userId);
-    entry[operationType] = {
+    setWorkPlanSlice(userId, operationType, {
       updatedDataAndTime: new Date().toISOString(),
       projectDetail: schedule,
       status: operationType === 'update' ? 'pending' : null,
-    };
+    });
     return HttpResponse.json({
       data: { createMyTaskEntry: { success: true, message: 'Work plan saved.' } },
     });

@@ -4,7 +4,7 @@ import { afterAll, afterEach, beforeAll } from 'vitest';
 import { resetMockData } from '../mocks/data';
 import { server } from '../mocks/server';
 
-// jsdom does not implement matchMedia; antd's responsive utilities need it.
+// jsdom does not implement matchMedia; Base UI's responsive/positioning utilities need it.
 window.matchMedia = (query: string) => ({
   matches: false,
   media: query,
@@ -16,7 +16,7 @@ window.matchMedia = (query: string) => ({
   dispatchEvent: () => false,
 });
 
-// jsdom does not implement ResizeObserver; antd's layout-measuring components need it.
+// jsdom does not implement ResizeObserver; Base UI's layout-measuring components need it.
 class ResizeObserverStub {
   observe = (): void => {};
   unobserve = (): void => {};

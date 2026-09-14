@@ -21,8 +21,16 @@ export const removeLocalStorageItem = (itemKey: string) => {
   return '';
 };
 
+// Only the signed-in session's own keys - a blanket `localStorage.clear()` would also
+// wipe unrelated persisted data (e.g. the mock backend's work-plan store), which must
+// survive sign-out so a team lead can still see/approve what an employee submitted
+// after that employee has logged out.
+const AUTH_STORAGE_KEYS = ['token', 'ref_token', 'last_login_time', 'remeber_me'];
+
 export const clearLocalStorage = () => {
   if (typeof window !== 'undefined') {
-    window.localStorage.clear();
+    AUTH_STORAGE_KEYS.forEach((key) => {
+      window.localStorage.removeItem(key);
+    });
   }
 };

@@ -143,7 +143,8 @@ src/
 AddSchedule (Submit)
   -> useMutation(SUBMIT_SCHEDULE)
   -> Apollo Client -> POST /graphql
-  -> MSW CreateTaskEntry handler writes the in-memory store, status: "pending"
+  -> MSW CreateTaskEntry handler writes the store and persists it to localStorage,
+     status: "pending"
   -> dispatch(fetchEmployeeWorkPlan) refetches
   -> TodayTimesheet re-renders with the new entry and its status badge
 ```
@@ -154,9 +155,10 @@ AddSchedule (Submit)
 TeamApprovals (Approve)
   -> dispatch(reviewWorkPlan({ entryId, status: "approved" }))
   -> Apollo Client -> POST /graphql
-  -> MSW ReviewWorkPlan handler updates the same in-memory entry
+  -> MSW ReviewWorkPlan handler updates the same entry and persists it to localStorage
   -> team-approval slice updates that entry's status locally
   -> next time the employee loads their timesheet, the status badge reflects it
+  -> the approval survives a page reload too - it's not just in-memory
 ```
 
 ## 🔑 Environment variables
@@ -171,16 +173,19 @@ Nothing here is secret - there's no real backend to protect credentials for in t
 
 ## 🎭 Mock GraphQL layer
 
-`src/mocks/handlers.ts` intercepts every GraphQL operation the app makes and answers from an
-in-memory store (`src/mocks/data.ts`), validating incoming mutation variables through zod instead
-of trusting them - the same discipline a real resolver layer would apply:
+`src/mocks/handlers.ts` intercepts every GraphQL operation the app makes and answers from a store
+(`src/mocks/data.ts`), validating incoming mutation variables through zod instead of trusting them
 
-- **Two seeded accounts** - an employee and a team lead (see
-  [Sample accounts](#sample-accounts)) - `GetUser` resolves the signed-in viewer from the
-  `Authorization` header the mock login flow issues.
-- **Stateful mutations** - `CreateTaskEntry` and `ReviewWorkPlan` actually mutate the in-memory
-  store, so approving a work update or adding a new one is reflected on the next query, for the
-  rest of the browser session.
+- the same discipline a real resolver layer would apply:
+
+- **Two seeded accounts, zero seeded work data** - login credentials for an employee and a team
+  lead are fixed (see [Sample accounts](#sample-accounts)) - `GetUser` resolves the signed-in
+  viewer from the `Authorization` header the mock login flow issues - but neither account starts
+  with any schedule, update, or approval already in place. Everything in the Approvals queue is
+  something a real user actually submitted.
+- **Stateful mutations, persisted to localStorage** - `CreateTaskEntry` and `ReviewWorkPlan`
+  mutate the store and write it to `localStorage`, so submitting a work update or approving/
+  rejecting one survives a page reload, not just the rest of the browser session.
 - **A GraphQL error is reachable on demand** - tests override a handler with `server.use(...)` to
   simulate a failed query rather than baking a permanent failure into the mock.
 
@@ -210,8 +215,9 @@ The mock layer ships two accounts. Any password works; the OTP code is always **
 | Employee  | `employee@teamflow.dev` / `jordan.rivera` |
 | Team lead | `lead@teamflow.dev` / `morgan.lee`        |
 
-Log in as the team lead to see Jordan Rivera's sample work update already sitting in the Approvals
-queue.
+Both accounts start with a completely empty timesheet - log in as the employee, submit a schedule
+and a work update, then log in as the team lead to review and approve/reject it in the Approvals
+queue. Everything persists in `localStorage`, so it's still there after a reload.
 
 ## 💻 Local development
 

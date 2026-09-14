@@ -4,6 +4,11 @@ import {
   type TeamWorkPlanEntry,
   type WorkPlanStatus,
 } from '../types/schdeule.type';
+import {
+  getLocalStorageItem,
+  removeLocalStorageItem,
+  setLocalStorageItem,
+} from '../utils/local-storage';
 
 export interface SampleUser {
   userId: string;
@@ -64,77 +69,73 @@ const emptySlice = (): SliceResponse => ({ updatedDataAndTime: '', projectDetail
 
 type WorkPlanStore = Record<string, Record<OperationName, SliceResponse>>;
 
-const buildInitialStore = (): WorkPlanStore => ({
-  '1': {
-    schedule: {
-      updatedDataAndTime: new Date().toISOString(),
-      projectDetail: [
-        {
-          projectId: 'p1',
-          projectName: 'Atlas Redesign',
-          taskDetail: [
-            { description: 'Build the settings page layout', taskType: 'Development', hours: 4 },
-            {
-              description: 'Review pull request from the design team',
-              taskType: 'Code Review',
-              hours: 1,
-            },
-          ],
-        },
-      ],
-    },
-    update: {
-      updatedDataAndTime: new Date().toISOString(),
-      status: 'pending',
-      projectDetail: [
-        {
-          projectId: 'p1',
-          projectName: 'Atlas Redesign',
-          taskDetail: [
-            { description: 'Finished the settings page layout', taskType: 'Development', hours: 5 },
-            { description: 'Addressed review comments', taskType: 'Code Review', hours: 1 },
-          ],
-        },
-      ],
-    },
-    tomorrow: emptySlice(),
-  },
-  '2': {
-    schedule: {
-      updatedDataAndTime: new Date().toISOString(),
-      projectDetail: [
-        {
-          projectId: 'p4',
-          projectName: 'Client Portal',
-          taskDetail: [
-            {
-              description: 'Sprint planning with the client',
-              taskType: 'Client Meeting',
-              hours: 2,
-            },
-          ],
-        },
-      ],
-    },
-    update: emptySlice(),
-    tomorrow: emptySlice(),
-  },
-});
+/**
+ * No sample users start with any work logged - every schedule/update/tomorrow's-plan
+ * entry is created by actually using the app, then persisted to localStorage
+ * (see loadStore/persistWorkPlanStore below). getWorkPlanEntry lazily creates an
+ * empty {schedule,update,tomorrow} record the first time a given user is looked up.
+ */
+const buildInitialStore = (): WorkPlanStore => ({});
 
-let workPlanStore: WorkPlanStore = buildInitialStore();
+/**
+ * The seeded sample data only describes the *first* load. Every actual mutation
+ * (submitting a schedule, approving/rejecting a work update) is persisted to
+ * localStorage so it survives a page reload instead of snapping back to the
+ * seed - this is what makes the mock backend feel "real" across a session,
+ * not just within it.
+ */
+const WORK_PLAN_STORAGE_KEY = 'teamflow_worklog_mock_work_plan_store';
+
+const isWorkPlanStore = (value: unknown): value is WorkPlanStore =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const loadStore = (): WorkPlanStore => {
+  const raw = getLocalStorageItem(WORK_PLAN_STORAGE_KEY);
+  if (!raw) return buildInitialStore();
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (isWorkPlanStore(parsed)) {
+      return parsed;
+    }
+  } catch {
+    // Corrupted/outdated localStorage value - fall through to a clean seed.
+  }
+  return buildInitialStore();
+};
+
+let workPlanStore: WorkPlanStore = loadStore();
+
+const persistWorkPlanStore = () => {
+  setLocalStorageItem(WORK_PLAN_STORAGE_KEY, JSON.stringify(workPlanStore));
+};
 
 export const getWorkPlanEntry = (userId: string): Record<OperationName, SliceResponse> => {
-  workPlanStore[userId] ??= {
-    schedule: emptySlice(),
-    update: emptySlice(),
-    tomorrow: emptySlice(),
-  };
+  if (!workPlanStore[userId]) {
+    workPlanStore[userId] = {
+      schedule: emptySlice(),
+      update: emptySlice(),
+      tomorrow: emptySlice(),
+    };
+    persistWorkPlanStore();
+  }
   return workPlanStore[userId];
 };
 
-/** Resets all mutable mock state. Called between test cases. */
+/** Writes one operation's slice (schedule/update/tomorrow) for a user and persists it. */
+export const setWorkPlanSlice = (
+  userId: string,
+  operation: OperationName,
+  slice: SliceResponse,
+): void => {
+  const entry = getWorkPlanEntry(userId);
+  entry[operation] = slice;
+  persistWorkPlanStore();
+};
+
+/** Resets all mutable mock state, including the persisted copy. Called between test cases. */
 export const resetMockData = () => {
   workPlanStore = buildInitialStore();
+  removeLocalStorageItem(WORK_PLAN_STORAGE_KEY);
 };
 
 const workPlanEntryId = (employeeId: string): string => `${employeeId}:update`;
@@ -171,5 +172,6 @@ export const reviewWorkPlanEntry = (
   }
   const entry = getWorkPlanEntry(employeeId);
   entry.update = { ...entry.update, status, reviewNote: note ?? null };
+  persistWorkPlanStore();
   return { success: true, message: `Work plan ${status}.` };
 };
