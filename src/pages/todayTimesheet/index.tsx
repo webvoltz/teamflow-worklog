@@ -19,15 +19,15 @@ const TodayTimesheet = () => {
     error,
   } = useSelector((state: RootState) => state.employeeWorkPlan);
   const { data: userData } = useSelector((state: RootState) => state.user);
+  const isTeamLeader = userData?.viewer.userrole.includes('team_leader') ?? false;
 
   useEffect(() => {
     if (userData?.viewer) {
       void dispatch(fetchEmployeeWorkPlan({ userId: userData.viewer.userId }));
       void dispatch(fetchTaskType());
-      const isTeamLeader = userData.viewer.userrole.includes('team_leader');
       void dispatch(fetchProjectOption({ userId: userData.viewer.userId, isTeamLeader }));
     }
-  }, [userData, dispatch]);
+  }, [userData, dispatch, isTeamLeader]);
 
   const isWorkScheduleExist = useMemo(
     () => compareDate(employeeWorkPlan.schedule),
@@ -40,7 +40,11 @@ const TodayTimesheet = () => {
   }
   return (
     <Spinner loading={loading}>
-      <TimesheetOverview name={userData?.viewer.name} workData={employeeWorkPlan} />
+      <TimesheetOverview
+        name={userData?.viewer.name}
+        workData={employeeWorkPlan}
+        isTeamLeader={isTeamLeader}
+      />
       {/* Work Schedule */}
       <WorkPlan
         scheduleTitle={'Work schedule'}

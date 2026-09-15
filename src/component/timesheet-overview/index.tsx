@@ -23,9 +23,10 @@ const STATUS_LABEL: Record<WorkPlanStatus, string> = {
 interface TimesheetOverviewProps {
   name?: string | undefined;
   workData: IndividualSchedule;
+  isTeamLeader?: boolean;
 }
 
-const TimesheetOverview = ({ name, workData }: TimesheetOverviewProps) => {
+const TimesheetOverview = ({ name, workData, isTeamLeader }: TimesheetOverviewProps) => {
   const hour = dayjs().hour();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   const firstName = name?.split(' ')[0];
@@ -34,6 +35,9 @@ const TimesheetOverview = ({ name, workData }: TimesheetOverviewProps) => {
   const { maxHours, progressPercentage, color } = getHoursProgressInfo(todaysHours);
   const projectCount = workData.schedule.projectDetail.length;
   const updateStatus = workData.update.status;
+  // A team lead's own update has no reviewer above them, so "pending review" would
+  // never resolve - show it as simply logged instead of implying a review is coming.
+  const isSelfLogged = isTeamLeader && updateStatus === 'pending';
 
   return (
     <div className="mb-6">
@@ -74,8 +78,11 @@ const TimesheetOverview = ({ name, workData }: TimesheetOverviewProps) => {
           label="Work update"
           value={
             updateStatus ? (
-              <Badge color={STATUS_COLOR[updateStatus]} className="uppercase">
-                {STATUS_LABEL[updateStatus]}
+              <Badge
+                color={isSelfLogged ? 'blue' : STATUS_COLOR[updateStatus]}
+                className="uppercase"
+              >
+                {isSelfLogged ? 'Logged' : STATUS_LABEL[updateStatus]}
               </Badge>
             ) : (
               <span className="text-sm font-medium text-muted-foreground">Not submitted</span>

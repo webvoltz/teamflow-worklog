@@ -29,6 +29,10 @@ interface ViewScheduleProps {
 
 const ViewSchedule = ({ operationName, viewMode, taskData }: ViewScheduleProps) => {
   const { data: employeeWorkPlan } = useSelector((state: RootState) => state.employeeWorkPlan);
+  const { data: userData } = useSelector((state: RootState) => state.user);
+  // A team lead's own update is never reviewed by anyone else, so treat it as
+  // logged rather than showing a "pending" status that will never resolve.
+  const isTeamLeader = userData?.viewer.userrole.includes('team_leader') ?? false;
 
   const viewData = useMemo<SingleTask[]>(() => {
     if (viewMode) {
@@ -102,14 +106,17 @@ const ViewSchedule = ({ operationName, viewMode, taskData }: ViewScheduleProps) 
       {operationName === 'update' && !viewMode && (
         <>
           <p className="update-msg text-sm flex items-center gap-2">
-            Thank you for your submission.
+            {isTeamLeader ? 'Work update logged.' : 'Thank you for your submission.'}
             {employeeWorkPlan.update.status && (
-              <Badge color={STATUS_COLOR[employeeWorkPlan.update.status]} className="uppercase">
-                {employeeWorkPlan.update.status}
+              <Badge
+                color={isTeamLeader ? 'blue' : STATUS_COLOR[employeeWorkPlan.update.status]}
+                className="uppercase"
+              >
+                {isTeamLeader ? 'Logged' : employeeWorkPlan.update.status}
               </Badge>
             )}
           </p>
-          {employeeWorkPlan.update.reviewNote && (
+          {!isTeamLeader && employeeWorkPlan.update.reviewNote && (
             <p className="update-msg text-sm">
               Reviewer note: {employeeWorkPlan.update.reviewNote}
             </p>
